@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>dotnet-IAMBuddy.TemporalWorker-19881a53-b5a3-4e19-817a-bfb6f8285dec</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1-Preview.1" />
+		<PackageReference Include="Temporalio" Version="1.6.0" />
+		<PackageReference Include="Temporalio.Extensions.Hosting" Version="1.6.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\IAMBuddy.ServiceDefaults\IAMBuddy.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\IAMBuddy.Shared\IAMBuddy.Shared.csproj" />
+	</ItemGroup>
+</Project>
