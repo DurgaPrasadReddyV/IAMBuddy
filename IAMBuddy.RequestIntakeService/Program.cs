@@ -1,5 +1,6 @@
 
 using IAMBuddy.RequestIntakeService.Services;
+using IAMBuddy.RequestIntakeService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -36,7 +37,13 @@ public class Program
         });
 
         // Add services to the container.
-        builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("RequestIntakeServiceDb"));
+        builder.Services.AddDbContext<AppDbContext>(options => 
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                   .EnableSensitiveDataLogging(builder.Environment.IsDevelopment())
+                   .EnableDetailedErrors(builder.Environment.IsDevelopment())
+                   .LogTo(message => System.Diagnostics.Debug.WriteLine(message), LogLevel.Information);
+        });
 
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -60,10 +67,22 @@ public class Program
 
         app.MapControllers();
 
+        // Initialize database with migrations
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            context.Database.EnsureCreated();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            
+            try
+            {
+                context.Database.Migrate();
+                logger.LogInformation("Database migration completed successfully");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while migrating the database");
+                throw;
+            }
         }
         app.Run();
     }

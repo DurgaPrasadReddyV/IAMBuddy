@@ -3,6 +3,15 @@ using InfinityFlow.Aspire.Temporal;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+// Add SQL Server for database services
+var sqlServer = builder.AddSqlServer("sqlserver")
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent);
+
+// Add databases
+var requestIntakeDb = sqlServer.AddDatabase("iambuddy-requestintake");
+var sqlServerManagementDb = sqlServer.AddDatabase("iambuddy-sqlservermanagement");
+
 var temporal = await builder.AddTemporalServerContainer("temporal", x => x
     .WithLogFormat(LogFormat.Json)
     .WithLogLevel(LogLevel.Info)
@@ -14,7 +23,9 @@ var temporalworker = builder.AddProject<Projects.IAMBuddy_TemporalWorker>("iambu
     .WithReference(temporal);
 
 builder.AddProject<Projects.IAMBuddy_RequestIntakeService>("iambuddy-requestintakeservice")
-    .WithReference(temporal).WaitFor(temporalworker);
+    .WithReference(temporal)
+    .WithReference(requestIntakeDb)
+    .WaitFor(temporalworker);
 
 builder.AddProject<Projects.IAMBuddy_ApprovalService>("iambuddy-approvalservice")
     .WithReference(temporal).WaitFor(temporalworker);
@@ -23,5 +34,9 @@ builder.AddProject<Projects.IAMBuddy_ProvisioningService>("iambuddy-provisioning
     .WithReference(temporal).WaitFor(temporalworker);
 
 builder.AddProject<Projects.IAMBuddy_NotificationService>("iambuddy-notificationservice");
+
+builder.AddProject<Projects.IAMBuddy_SqlServerManagementService>("iambuddy-sqlservermanagementservice")
+    .WithReference(sqlServerManagementDb)
+    .WithReference(temporal);
 
 builder.Build().Run();
