@@ -19,11 +19,11 @@ namespace IAMBuddy.RequestIntakeService
             modelBuilder.Entity<MSSQLAccountRequest>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.ServerAccountName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.DatabaseAccountName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.DatabaseName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.ServerName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.RequestorEmail).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.BusinessJustification).IsRequired().HasMaxLength(1000);
             });
         }
     }

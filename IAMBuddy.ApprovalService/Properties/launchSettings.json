@@ -6,16 +6,14 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7186"
+      "applicationUrl": "http://localhost:8001;https://localhost:44301"
     },
     "Container (ApprovalService)": {
-      "commandName": "SdkContainer",
+      "commandName": "Docker",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081"
-      },
-      "publishAllPorts": true,
-      "useSSL": true
+      "publishAllPorts": false,
+      "useSSL": true,
+      "sslPort": 44301
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"

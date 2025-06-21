@@ -31,7 +31,7 @@ namespace IAMBuddy.RequestIntakeService.Controllers
         {
             try
             {
-                _logger.LogInformation("Received account request for user: {Username}", request.Username);
+                _logger.LogInformation("Received account request for user email: {RequestorEmail}", request.RequestorEmail);
 
                 // Validate the request
                 var validationResult = await _validationService.ValidateAccountRequestAsync(request);
@@ -45,14 +45,13 @@ namespace IAMBuddy.RequestIntakeService.Controllers
                 await _context.SaveChangesAsync();
 
                 // Start Temporal workflow
-                var workflowId = await _temporalService.StartAccountProvisioningWorkflowAsync(request);
-                request.WorkflowId = workflowId;
-                
+                await _temporalService.StartAccountProvisioningWorkflowAsync(request);
+
                 _context.AccountRequests.Update(request);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Account request created with ID: {RequestId}, Workflow ID: {WorkflowId}", 
-                    request.Id, workflowId);
+                    request.Id, request.Id);
 
                 return CreatedAtAction(nameof(GetAccountRequest), new { id = request.Id }, request);
             }
@@ -76,16 +75,8 @@ namespace IAMBuddy.RequestIntakeService.Controllers
             return request;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MSSQLAccountRequest>>> GetAccountRequests()
-        {
-            return await _context.AccountRequests
-                .OrderByDescending(r => r.RequestedDate)
-                .ToListAsync();
-        }
-
         [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] WorkflowStatus status)
+        public async Task<IActionResult> UpdateAccountRequestStatus(Guid id, [FromBody] AccountRequestStatus status)
         {
             var request = await _context.AccountRequests.FindAsync(id);
             if (request == null)
@@ -94,21 +85,6 @@ namespace IAMBuddy.RequestIntakeService.Controllers
             }
 
             request.Status = status;
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAccountRequest(Guid id)
-        {
-            var request = await _context.AccountRequests.FindAsync(id);
-            if (request == null)
-            {
-                return NotFound();
-            }
-
-            _context.AccountRequests.Remove(request);
             await _context.SaveChangesAsync();
 
             return NoContent();

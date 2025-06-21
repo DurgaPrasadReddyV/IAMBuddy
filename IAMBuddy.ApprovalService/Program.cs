@@ -1,4 +1,6 @@
 
+using Scalar.AspNetCore;
+
 namespace IAMBuddy.ApprovalService;
 
 public class Program
@@ -11,23 +13,31 @@ public class Program
         // Add services to the container.
 
         builder.Services.AddControllers();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+        // Configure OpenAPI
+        builder.Services.AddOpenApi(options =>
+        {
+            options.AddDocumentTransformer((document, context, _) =>
+            {
+                document.Info = new()
+                {
+                    Title = "Approval API",
+                    Version = "v1",
+                };
+                return Task.CompletedTask;
+            });
+        });
 
         var app = builder.Build();
 
         app.MapDefaultEndpoints();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
+        // Enable OpenAPI and Scalar
+        app.MapOpenApi().CacheOutput();
+        app.MapScalarApiReference();
 
-        app.UseAuthorization();
-
-
-        app.MapControllers();
+        // Redirect root to Scalar UI
+        app.MapGet("/", () => Results.Redirect("/scalar/v1"))
+           .ExcludeFromDescription();
 
         app.Run();
     }

@@ -1,27 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+	<Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <IsAspireHost>true</IsAspireHost>
-    <UserSecretsId>f15d5012-74f8-490e-be2b-384be140d54d</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsAspireHost>true</IsAspireHost>
+		<UserSecretsId>f15d5012-74f8-490e-be2b-384be140d54d</UserSecretsId>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.0" />
-    <PackageReference Include="InfinityFlow.Aspire.Temporal" Version="0.6.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.0" />
+		<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+		<PackageReference Include="Aspire.Hosting.SqlServer" Version="9.3.1" />
+		<PackageReference Include="Aspire.Hosting.Redis" Version="9.3.1" />
+		<PackageReference Include="InfinityFlow.Aspire.Temporal" Version="0.6.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\IAMBuddy.ApprovalService\IAMBuddy.ApprovalService.csproj" />
-    <ProjectReference Include="..\IAMBuddy.NotificationService\IAMBuddy.NotificationService.csproj" />
-    <ProjectReference Include="..\IAMBuddy.ProvisioningService\IAMBuddy.ProvisioningService.csproj" />
-    <ProjectReference Include="..\IAMBuddy.RequestIntakeService\IAMBuddy.RequestIntakeService.csproj" />
-    <ProjectReference Include="..\IAMBuddy.TemporalWorker\IAMBuddy.TemporalWorker.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\IAMBuddy.ApprovalService\IAMBuddy.ApprovalService.csproj" />
+		<ProjectReference Include="..\IAMBuddy.NotificationService\IAMBuddy.NotificationService.csproj" />
+		<ProjectReference Include="..\IAMBuddy.ProvisioningService\IAMBuddy.ProvisioningService.csproj" />
+		<ProjectReference Include="..\IAMBuddy.RequestIntakeService\IAMBuddy.RequestIntakeService.csproj" />
+		<ProjectReference Include="..\IAMBuddy.TemporalWorker\IAMBuddy.TemporalWorker.csproj" />
+	</ItemGroup>
 
 </Project>

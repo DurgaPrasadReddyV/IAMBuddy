@@ -1,27 +1,38 @@
-using Aspire.Hosting;
-using InfinityFlow.Aspire.Temporal;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var temporal = await builder.AddTemporalServerContainer("temporal", x => x
-    .WithLogFormat(LogFormat.Json)
-    .WithLogLevel(LogLevel.Info)
-    .WithNamespace("test1", "test2")
-    .WithDynamicConfigValue("frontend.enableUpdateWorkflowExecution", true)
-);
+// Add PostgreSQL Server
+var postgresServer = builder.AddPostgres("postgresql")
+    .WithPgAdmin();
 
-var temporalworker = builder.AddProject<Projects.IAMBuddy_TemporalWorker>("iambuddy-temporalworker")
-    .WithReference(temporal);
+//Add Temporal Server
+var temporalServer = await builder.AddTemporalServerContainer("temporal-server");
+temporalServer.WaitFor(postgresServer).WithReference(postgresServer);
 
-builder.AddProject<Projects.IAMBuddy_RequestIntakeService>("iambuddy-requestintakeservice")
-    .WithReference(temporal).WaitFor(temporalworker);
+//Add Temporal Worker
+var temporalWorker = builder.AddProject<Projects.IAMBuddy_TemporalWorker>("temporal-worker");
+temporalWorker.WaitFor(temporalServer).WithReference(temporalServer);
 
-builder.AddProject<Projects.IAMBuddy_ApprovalService>("iambuddy-approvalservice")
-    .WithReference(temporal).WaitFor(temporalworker);
+// Add Request Intake Service
+var requestIntakeService = builder.AddProject<Projects.IAMBuddy_RequestIntakeService>("request-intake-service");
+requestIntakeService.WaitFor(postgresServer).WithReference(postgresServer);
+requestIntakeService.WaitFor(temporalWorker).WithReference(temporalWorker);
 
-builder.AddProject<Projects.IAMBuddy_ProvisioningService>("iambuddy-provisioningservice")
-    .WithReference(temporal).WaitFor(temporalworker);
+// Add Approval Service
+var approvalService = builder.AddProject<Projects.IAMBuddy_ApprovalService>("approval-service");
+approvalService.WaitFor(postgresServer).WithReference(postgresServer);
+approvalService.WaitFor(temporalWorker).WithReference(temporalWorker);
 
-builder.AddProject<Projects.IAMBuddy_NotificationService>("iambuddy-notificationservice");
+// Add Provisioning Service
+var provisioningService = builder.AddProject<Projects.IAMBuddy_ProvisioningService>("provisioning-service");
+provisioningService.WaitFor(postgresServer).WithReference(postgresServer);
+provisioningService.WaitFor(temporalWorker).WithReference(temporalWorker);
+
+// Add Redis
+var redis = builder.AddRedis("redis");
+
+// Add Notification Service
+var notificationService = builder.AddProject<Projects.IAMBuddy_NotificationService>("notification-service");
+notificationService.WaitFor(redis).WithReference(redis);
 
 builder.Build().Run();

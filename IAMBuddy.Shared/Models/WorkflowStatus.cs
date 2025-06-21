@@ -1,8 +1,8 @@
 namespace IAMBuddy.Shared.Models
 {
-    public enum WorkflowStatus
+    public enum AccountRequestStatus
     {
-        Pending,
+        Initiated,
         PendingApproval,
         Approved,
         Rejected,

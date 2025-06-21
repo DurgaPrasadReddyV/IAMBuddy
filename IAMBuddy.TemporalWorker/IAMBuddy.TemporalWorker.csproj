@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<UserSecretsId>dotnet-IAMBuddy.TemporalWorker-19881a53-b5a3-4e19-817a-bfb6f8285dec</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<UserSecretsId>7c262584-78a6-4b16-afe2-c769a7ad857d</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>

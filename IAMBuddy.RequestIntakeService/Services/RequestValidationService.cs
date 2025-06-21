@@ -33,37 +33,42 @@ namespace IAMBuddy.RequestIntakeService.Services
 
         private void ValidateRequiredFields(MSSQLAccountRequest request, ValidationResult result)
         {
-            if (string.IsNullOrWhiteSpace(request.Username))
-                result.Errors.Add("Username is required");
+            if (string.IsNullOrWhiteSpace(request.ServerName))
+                result.Errors.Add("Server name is required");
+
+            if (string.IsNullOrWhiteSpace(request.ServerAccountName))
+                result.Errors.Add("ServerAccountName is required");
 
             if (string.IsNullOrWhiteSpace(request.DatabaseName))
                 result.Errors.Add("Database name is required");
 
-            if (string.IsNullOrWhiteSpace(request.ServerName))
-                result.Errors.Add("Server name is required");
+            if (string.IsNullOrWhiteSpace(request.DatabaseAccountName))
+                result.Errors.Add("DatabaseAccountName is required");
 
             if (string.IsNullOrWhiteSpace(request.RequestorEmail))
                 result.Errors.Add("Requestor email is required");
-
-            if (string.IsNullOrWhiteSpace(request.BusinessJustification))
-                result.Errors.Add("Business justification is required");
         }
 
         private void ValidateBusinessRules(MSSQLAccountRequest request, ValidationResult result)
         {
             // Username length and format
-            if (!string.IsNullOrWhiteSpace(request.Username))
+            if (!string.IsNullOrWhiteSpace(request.ServerAccountName))
             {
-                if (request.Username.Length < 3 || request.Username.Length > 50)
-                    result.Errors.Add("Username must be between 3 and 50 characters");
+                if (request.ServerAccountName.Length < 3 || request.ServerAccountName.Length > 50)
+                    result.Errors.Add("ServerAccountName must be between 3 and 50 characters");
 
-                if (!Regex.IsMatch(request.Username, @"^[a-zA-Z0-9_-]+$"))
-                    result.Errors.Add("Username can only contain letters, numbers, underscores, and hyphens");
+                if (!Regex.IsMatch(request.ServerAccountName, @"^[a-zA-Z0-9_-]+$"))
+                    result.Errors.Add("ServerAccountName can only contain letters, numbers, underscores, and hyphens");
             }
 
-            // Business justification minimum length
-            if (!string.IsNullOrWhiteSpace(request.BusinessJustification) && request.BusinessJustification.Length < 10)
-                result.Errors.Add("Business justification must be at least 10 characters");
+            if (!string.IsNullOrWhiteSpace(request.DatabaseAccountName))
+            {
+                if (request.DatabaseAccountName.Length < 3 || request.DatabaseAccountName.Length > 50)
+                    result.Errors.Add("DatabaseAccountName must be between 3 and 50 characters");
+
+                if (!Regex.IsMatch(request.DatabaseAccountName, @"^[a-zA-Z0-9_-]+$"))
+                    result.Errors.Add("DatabaseAccountName can only contain letters, numbers, underscores, and hyphens");
+            }
         }
 
         private void ValidateFormats(MSSQLAccountRequest request, ValidationResult result)

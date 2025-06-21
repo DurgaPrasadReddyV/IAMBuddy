@@ -29,7 +29,7 @@ public class Program
         builder.Services
             .AddTemporalClient(opts =>
             {
-                opts.TargetHost = builder.Configuration.GetConnectionString("temporal");
+                opts.TargetHost = builder.Configuration.GetConnectionString("temporal-server");
                 opts.Interceptors = new[] { new TracingInterceptor() };
                 opts.Runtime = runtime;
             })

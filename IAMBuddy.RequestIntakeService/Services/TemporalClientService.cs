@@ -15,24 +15,20 @@ namespace IAMBuddy.RequestIntakeService.Services
             _temporalClient = temporalClient;
         }
 
-        public async Task<string> StartAccountProvisioningWorkflowAsync(MSSQLAccountRequest request)
+        public async Task StartAccountProvisioningWorkflowAsync(MSSQLAccountRequest request)
         {
             try
             {
-                var workflowId = $"account-provisioning-{request.Id}";
-                
                 var handle = await _temporalClient.StartWorkflowAsync<MSSQLAccountProvisioningWorkflow>(
                     workflow => workflow.SubmitRequestAsync(request),
                     new WorkflowOptions
                     {
-                        Id = workflowId,
-                        TaskQueue = "account-provisioning"
+                        Id = request.Id.ToString(),
+                        TaskQueue = "mssqlaccount-provisioning"
                     });
 
                 _logger.LogInformation("Started workflow {WorkflowId} for account request {RequestId}",
-                    workflowId, request.Id);
-
-                return workflowId;
+                    request.Id, request.Id);
             }
             catch (Exception ex)
             {
