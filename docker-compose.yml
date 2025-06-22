@@ -86,6 +86,23 @@ services:
     ports:
       - "8001:80"
       - "44301:443" 
+ 
+  approval-mcp-server:
+    build:
+      context: .
+      dockerfile: IAMBuddy.ApprovalMCPServer/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8011:80"
+      - "44311:443"
 
   notification-service:
     build:
@@ -121,6 +138,23 @@ services:
       - "8003:80"
       - "44303:443" 
 
+  provisioning-mcp-server:
+    build:
+      context: .
+      dockerfile: IAMBuddy.ProvisioningMCPServer/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8013:80"
+      - "44313:443"
+
   request-intake-service:
     build:
       context: .
@@ -137,6 +171,40 @@ services:
     ports:
       - "8004:80"
       - "44304:443" 
+
+  request-intake-mcp-server:
+    build:
+      context: .
+      dockerfile: IAMBuddy.RequestIntakeMCPServer/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8014:80"
+      - "44314:443" 
+
+  web-ui:
+    build:
+      context: .
+      dockerfile: IAMBuddy.WebUI/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8020:80"
+      - "44320:443"
 
 networks:
   iam-buddy-network:
