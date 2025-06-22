@@ -11,6 +11,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["IAMBuddy.TemporalWorker/IAMBuddy.TemporalWorker.csproj", "IAMBuddy.TemporalWorker/"]
+COPY ["IAMBuddy.Shared/IAMBuddy.Shared.csproj", "IAMBuddy.Shared/"]
 RUN dotnet restore "./IAMBuddy.TemporalWorker/IAMBuddy.TemporalWorker.csproj"
 COPY . .
 WORKDIR "/src/IAMBuddy.TemporalWorker"

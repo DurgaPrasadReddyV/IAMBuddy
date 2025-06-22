@@ -12,6 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["IAMBuddy.ApprovalService/IAMBuddy.ApprovalService.csproj", "IAMBuddy.ApprovalService/"]
+COPY ["IAMBuddy.Shared/IAMBuddy.Shared.csproj", "IAMBuddy.Shared/"]
 RUN dotnet restore "./IAMBuddy.ApprovalService/IAMBuddy.ApprovalService.csproj"
 COPY . .
 WORKDIR "/src/IAMBuddy.ApprovalService"

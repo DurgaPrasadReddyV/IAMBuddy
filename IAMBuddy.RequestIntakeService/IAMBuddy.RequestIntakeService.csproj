@@ -13,13 +13,17 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.5" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1-Preview.1" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
 		<PackageReference Include="Temporalio" Version="1.6.0" />
 		<PackageReference Include="Temporalio.Extensions.Hosting" Version="1.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\IAMBuddy.ServiceDefaults\IAMBuddy.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\IAMBuddy.Shared\IAMBuddy.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Controllers\" />
 	</ItemGroup>
 
 </Project>

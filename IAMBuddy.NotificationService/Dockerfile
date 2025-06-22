@@ -11,6 +11,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["IAMBuddy.NotificationService/IAMBuddy.NotificationService.csproj", "IAMBuddy.NotificationService/"]
+COPY ["IAMBuddy.Shared/IAMBuddy.Shared.csproj", "IAMBuddy.Shared/"]
 RUN dotnet restore "./IAMBuddy.NotificationService/IAMBuddy.NotificationService.csproj"
 COPY . .
 WORKDIR "/src/IAMBuddy.NotificationService"

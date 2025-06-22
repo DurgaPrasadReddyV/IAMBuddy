@@ -8,7 +8,6 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaults();
 
         // Add services to the container.
 
@@ -28,8 +27,6 @@ public class Program
         });
 
         var app = builder.Build();
-
-        app.MapDefaultEndpoints();
 
         // Enable OpenAPI and Scalar
         app.MapOpenApi().CacheOutput();

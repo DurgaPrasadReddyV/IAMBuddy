@@ -12,6 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["IAMBuddy.ProvisioningService/IAMBuddy.ProvisioningService.csproj", "IAMBuddy.ProvisioningService/"]
+COPY ["IAMBuddy.Shared/IAMBuddy.Shared.csproj", "IAMBuddy.Shared/"]
 RUN dotnet restore "./IAMBuddy.ProvisioningService/IAMBuddy.ProvisioningService.csproj"
 COPY . .
 WORKDIR "/src/IAMBuddy.ProvisioningService"

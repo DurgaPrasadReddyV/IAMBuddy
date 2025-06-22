@@ -1,0 +1,144 @@
+services:
+  postgresql:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: iambuddy
+      POSTGRES_USER: iambuddy 
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - iam-buddy-network
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - postgresql
+    environment:
+      PGADMIN_DEFAULT_EMAIL: iambuddy@iambuddy.com
+      PGADMIN_DEFAULT_PASSWORD: iambuddy
+    volumes:
+      - /var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json
+    networks:
+      - iam-buddy-network
+    ports:
+      - "15432:80"
+
+  temporal:
+    image: temporalio/auto-setup:1.27.2
+    depends_on:
+      - postgresql
+    environment:
+      - DB=postgres12
+      - DB_PORT=5432
+      - POSTGRES_USER=iambuddy
+      - POSTGRES_PWD=iambuddy
+      - POSTGRES_SEEDS=postgresql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    networks:
+      - iam-buddy-network
+    ports:
+      - 7233:7233
+
+  temporal-admin-tools:
+    image: temporalio/admin-tools:1.27.2-tctl-1.18.2-cli-1.3.0
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    stdin_open: true
+    tty: true
+    networks:
+      - iam-buddy-network
+    
+  temporal-ui:
+    image: temporalio/ui:2.34.0
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    networks:
+      - iam-buddy-network
+    ports:
+      - 8080:8080
+
+  approval-service:
+    build:
+      context: .
+      dockerfile: IAMBuddy.ApprovalService/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8001:80"
+      - "44301:443" 
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: IAMBuddy.NotificationService/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8002:80"
+      - "44302:443" 
+
+  provisioning-service:
+    build:
+      context: .
+      dockerfile: IAMBuddy.ProvisioningService/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8003:80"
+      - "44303:443" 
+
+  request-intake-service:
+    build:
+      context: .
+      dockerfile: IAMBuddy.RequestIntakeService/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8004:80"
+      - "44304:443" 
+
+networks:
+  iam-buddy-network:
+    driver: bridge
+    name: iam-buddy-network

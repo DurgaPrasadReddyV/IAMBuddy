@@ -1,11 +1,8 @@
 
 using IAMBuddy.RequestIntakeService.Services;
-using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using System.Diagnostics.Metrics;
-using Temporalio.Extensions.DiagnosticSource;
-using Temporalio.Extensions.OpenTelemetry;
 using Temporalio.Runtime;
 
 namespace IAMBuddy.RequestIntakeService;
@@ -20,18 +17,11 @@ public class Program
 
         var runtime = new TemporalRuntime(new()
         {
-            Telemetry = new()
-            {
-                Metrics = new() { CustomMetricMeter = new CustomMetricMeter(meter) },
-            },
         });
-
-        builder.AddServiceDefaults();
 
         builder.Services.AddTemporalClient(opts =>
         {
             opts.TargetHost = builder.Configuration["ConnectionStrings:temporal"];
-            opts.Interceptors = [new TracingInterceptor()];
             opts.Runtime = runtime;
         });
 
@@ -44,8 +34,6 @@ public class Program
         builder.Services.AddScoped<RequestValidationService>();
         builder.Services.AddScoped<TemporalClientService>();
         var app = builder.Build();
-
-        app.MapDefaultEndpoints();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

@@ -1,4 +1,5 @@
-﻿using IAMBuddy.Shared.Models;
+﻿using IAMBuddy.RequestIntakeService.Models;
+using IAMBuddy.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -10,6 +11,7 @@ namespace IAMBuddy.RequestIntakeService
         public AppDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<MSSQLAccountRequest> AccountRequests { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

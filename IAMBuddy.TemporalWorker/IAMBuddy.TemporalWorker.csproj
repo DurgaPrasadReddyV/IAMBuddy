@@ -16,7 +16,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\IAMBuddy.ServiceDefaults\IAMBuddy.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\IAMBuddy.Shared\IAMBuddy.Shared.csproj" />
 	</ItemGroup>
 </Project>

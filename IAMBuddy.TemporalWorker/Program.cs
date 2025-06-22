@@ -1,8 +1,6 @@
 using IAMBuddy.Shared.Workflows;
 using Microsoft.VisualBasic;
 using System.Diagnostics.Metrics;
-using Temporalio.Extensions.DiagnosticSource;
-using Temporalio.Extensions.OpenTelemetry;
 using Temporalio.Runtime;
 using Temporalio.Activities;
 using Temporalio.Extensions.Hosting;
@@ -21,16 +19,13 @@ public class Program
         {
             Telemetry = new()
             {
-                Metrics = new() { CustomMetricMeter = new CustomMetricMeter(meter) },
             },
         });
 
-        builder.AddServiceDefaults();
         builder.Services
             .AddTemporalClient(opts =>
             {
                 opts.TargetHost = builder.Configuration.GetConnectionString("temporal-server");
-                opts.Interceptors = new[] { new TracingInterceptor() };
                 opts.Runtime = runtime;
             })
             .AddHostedTemporalWorker("account-provisioning")

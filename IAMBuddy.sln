@@ -5,10 +5,6 @@ VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.RequestIntakeService", "IAMBuddy.RequestIntakeService\IAMBuddy.RequestIntakeService.csproj", "{A1F3D29E-3609-A81C-70D6-C18B00AAD8CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.AppHost", "IAMBuddy.AppHost\IAMBuddy.AppHost.csproj", "{624B2F47-36BF-40E9-BEEC-3B2B451E1AA1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.ServiceDefaults", "IAMBuddy.ServiceDefaults\IAMBuddy.ServiceDefaults.csproj", "{33873E73-3033-5004-E9F9-AA692730C185}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.Shared", "IAMBuddy.Shared\IAMBuddy.Shared.csproj", "{954FDCA6-18FA-447A-BB95-B3393BF570AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.ApprovalService", "IAMBuddy.ApprovalService\IAMBuddy.ApprovalService.csproj", "{C50D6113-6E31-0698-6756-3BC454051B9F}"
@@ -25,6 +21,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{BF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workers", "Workers", "{1673CED9-D961-44E3-AEED-DA2CAD8A6F6D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.env = .env
+		development-sql.yaml = development-sql.yaml
+		docker-compose.yml = docker-compose.yml
+		servers.json = servers.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dynamicconfig", "dynamicconfig", "{F56C4DCB-1DD6-483A-A3B2-900551EEAB09}"
+	ProjectSection(SolutionItems) = preProject
+		dynamicconfig\development-cass.yaml = dynamicconfig\development-cass.yaml
+		dynamicconfig\development-sql.yaml = dynamicconfig\development-sql.yaml
+		dynamicconfig\docker.yaml = dynamicconfig\docker.yaml
+		dynamicconfig\README.md = dynamicconfig\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,14 +47,6 @@ Global
 		{A1F3D29E-3609-A81C-70D6-C18B00AAD8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1F3D29E-3609-A81C-70D6-C18B00AAD8CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1F3D29E-3609-A81C-70D6-C18B00AAD8CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{624B2F47-36BF-40E9-BEEC-3B2B451E1AA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{624B2F47-36BF-40E9-BEEC-3B2B451E1AA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{624B2F47-36BF-40E9-BEEC-3B2B451E1AA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{624B2F47-36BF-40E9-BEEC-3B2B451E1AA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33873E73-3033-5004-E9F9-AA692730C185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33873E73-3033-5004-E9F9-AA692730C185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33873E73-3033-5004-E9F9-AA692730C185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33873E73-3033-5004-E9F9-AA692730C185}.Release|Any CPU.Build.0 = Release|Any CPU
 		{954FDCA6-18FA-447A-BB95-B3393BF570AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{954FDCA6-18FA-447A-BB95-B3393BF570AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{954FDCA6-18FA-447A-BB95-B3393BF570AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,12 +73,12 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A1F3D29E-3609-A81C-70D6-C18B00AAD8CF} = {BF7EFC6F-16FE-4297-9814-0AEFE6088AC7}
-		{33873E73-3033-5004-E9F9-AA692730C185} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{954FDCA6-18FA-447A-BB95-B3393BF570AA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{C50D6113-6E31-0698-6756-3BC454051B9F} = {BF7EFC6F-16FE-4297-9814-0AEFE6088AC7}
 		{A3BE31AD-670C-F728-1DA5-E782C4C971B9} = {BF7EFC6F-16FE-4297-9814-0AEFE6088AC7}
 		{39E69FA4-C272-8EA4-B454-5B3AA7F5957D} = {1673CED9-D961-44E3-AEED-DA2CAD8A6F6D}
 		{8024113D-5FC7-21B1-04AB-6D3823F423E3} = {BF7EFC6F-16FE-4297-9814-0AEFE6088AC7}
+		{F56C4DCB-1DD6-483A-A3B2-900551EEAB09} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93606EA5-9687-4991-915F-CC6615E24901}
