@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace IAMBuddy.ApprovalMCPServer.Tools
 {
     [McpServerToolType]
-    public sealed class MSSQLProvisioningTool
+    public sealed class EchoTool
     {
         [McpServerTool, Description("Echoes the message back to the client.")]
         public static string Echo(string message) => $"Hello from C#: {message}";
