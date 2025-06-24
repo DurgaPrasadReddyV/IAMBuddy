@@ -18,7 +18,7 @@
         var group = orderedGroups[i];
         var position = i == 0 ? ChatBubblePosition.Start : ChatBubblePosition.End;
         <MudGrid Justify=Justify.Center Spacing="3" Class="p-4">
-            <MudItem xs="12" sm="8" >
+            <MudItem xs="12" sm="8">
                 <MudPaper Class="m-2 p-2">
                     <MudChat ChatPosition="@position">
                         <MudAvatar>@group.First().Initials</MudAvatar>
@@ -58,66 +58,65 @@
         messages.Add(new Message("Obi-Wan Kenobi", "OK", "You were my brother Anakin.", "2 hours ago"));
         messages.Add(new Message("Obi-Wan Kenobi", "OK", "I loved you.", "2 hours ago"));
         messages.Add(new Message("Anakin Skywalker", "AS", "I'm sorry.", "1 hour ago"));
-        await Task.CompletedTask;
-        //     var kernel = Kernel.CreateBuilder()
-        //         .AddGoogleAIGeminiChatCompletion(
-        //             modelId: "gemini-2.5-flash",
-        //             apiKey: "hello")
-        //         .Build();
+        var kernel = Kernel.CreateBuilder()
+            .AddGoogleAIGeminiChatCompletion(
+                modelId: "gemini-2.5-flash",
+                apiKey: "hello")
+            .Build();
 
-        //     var approvalMCPClient = await McpClientFactory.CreateAsync(
-        //         new SseClientTransport(new SseClientTransportOptions()
-        //         {
-        //             Endpoint = new Uri("http://localhost:8011/sse")
-        //         }),
-        //         new McpClientOptions()
-        //         {
-        //             ClientInfo = new() { Name = "ApprovalMCPClient", Version = "1.0.0" }
-        //         });
+        var approvalMCPClient = await McpClientFactory.CreateAsync(
+            new SseClientTransport(new SseClientTransportOptions()
+            {
+                Endpoint = new Uri("http://localhost:8011/sse")
+            }),
+            new McpClientOptions()
+            {
+                ClientInfo = new() { Name = "ApprovalMCPClient", Version = "1.0.0" }
+            });
 
-        //     var approvalTools = await approvalMCPClient.ListToolsAsync();
+        var approvalTools = await approvalMCPClient.ListToolsAsync();
 
-        //     // Print approval mcp tools
-        //     foreach (var tool in approvalTools)
-        //     {
-        //         Console.WriteLine($" - {tool.Name}: {tool.Description}");
-        //     }
+        // Print approval mcp tools
+        foreach (var tool in approvalTools)
+        {
+            Console.WriteLine($" - {tool.Name}: {tool.Description}");
+        }
 
-        //     var provisioningMCPClient = await McpClientFactory.CreateAsync(
-        //         new SseClientTransport(new SseClientTransportOptions()
-        //         {
-        //             Endpoint = new Uri("http://localhost:8013/sse")
-        //         }),
-        //         new McpClientOptions()
-        //         {
-        //             ClientInfo = new() { Name = "ProvisioningMCPClient", Version = "1.0.0" }
-        //         });
+        var provisioningMCPClient = await McpClientFactory.CreateAsync(
+            new SseClientTransport(new SseClientTransportOptions()
+            {
+                Endpoint = new Uri("http://localhost:8013/sse")
+            }),
+            new McpClientOptions()
+            {
+                ClientInfo = new() { Name = "ProvisioningMCPClient", Version = "1.0.0" }
+            });
 
-        //     var provisioningTools = await provisioningMCPClient.ListToolsAsync();
+        var provisioningTools = await provisioningMCPClient.ListToolsAsync();
 
-        //     // Print provisioning mcp tools
-        //     foreach (var tool in provisioningTools)
-        //     {
-        //         Console.WriteLine($" - {tool.Name}: {tool.Description}");
-        //     }
+        // Print provisioning mcp tools
+        foreach (var tool in provisioningTools)
+        {
+            Console.WriteLine($" - {tool.Name}: {tool.Description}");
+        }
 
-        //     var requestIntakeMCPClient = await McpClientFactory.CreateAsync(
-        //         new SseClientTransport(new SseClientTransportOptions()
-        //         {
-        //             Endpoint = new Uri("http://localhost:8014/sse")
-        //         }),
-        //         new McpClientOptions()
-        //         {
-        //             ClientInfo = new() { Name = "RequestIntakeMCPClient", Version = "1.0.0" }
-        //         });
+        var requestIntakeMCPClient = await McpClientFactory.CreateAsync(
+            new SseClientTransport(new SseClientTransportOptions()
+            {
+                Endpoint = new Uri("http://localhost:8014/sse")
+            }),
+            new McpClientOptions()
+            {
+                ClientInfo = new() { Name = "RequestIntakeMCPClient", Version = "1.0.0" }
+            });
 
-        //     var requestIntakeTools = await requestIntakeMCPClient.ListToolsAsync();
+        var requestIntakeTools = await requestIntakeMCPClient.ListToolsAsync();
 
-        //     // Print provisioning mcp tools
-        //     foreach (var tool in requestIntakeTools)
-        //     {
-        //         Console.WriteLine($" - {tool.Name}: {tool.Description}");
-        //     }
+        // Print provisioning mcp tools
+        foreach (var tool in requestIntakeTools)
+        {
+            Console.WriteLine($" - {tool.Name}: {tool.Description}");
+        }
     }
 
     private void ShowHiddenInfo()
