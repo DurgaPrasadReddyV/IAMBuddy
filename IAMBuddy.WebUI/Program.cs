@@ -1,5 +1,6 @@
 
 using IAMBuddy.WebUI.Components;
+using MudBlazor.Services;
 using System;
 
 namespace IAMBuddy.WebUI
@@ -10,6 +11,13 @@ namespace IAMBuddy.WebUI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddMudServices();
+            builder.Services.AddAntiforgery(options =>
+            {     // Set Cookie properties using CookieBuilder properties†.
+
+                options.Cookie.Expiration = TimeSpan.Zero;
+
+            });
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
@@ -35,6 +43,7 @@ namespace IAMBuddy.WebUI
 
             app.MapStaticAssets();
             app.MapRazorComponents<App>()
+                .DisableAntiforgery()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 
 namespace IAMBuddy.WebUI.Client
 {
@@ -7,7 +8,7 @@ namespace IAMBuddy.WebUI.Client
         static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
+            builder.Services.AddMudServices();
             await builder.Build().RunAsync();
         }
     }

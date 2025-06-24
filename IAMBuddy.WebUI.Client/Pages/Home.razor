@@ -1,74 +1,157 @@
-﻿@page "/"  
-@using System.Text.RegularExpressions  
-@using Microsoft.SemanticKernel  
-@using Microsoft.SemanticKernel.Connectors.Google;  
-@using ModelContextProtocol.Client  
-@using System.Text  
-@attribute [StreamRendering(true)]  
+﻿@page "/"
+@using System.Text.RegularExpressions
+@using Microsoft.SemanticKernel
+@using Microsoft.SemanticKernel.Connectors.Google;
+@using ModelContextProtocol.Client
+@using System.Text
+@attribute [StreamRendering(true)]
+@inject ISnackbar Snackbar
 
-@code {  
-#pragma warning disable SKEXP0070
-    protected override async Task OnInitializedAsync()  
+@{
+    var orderedGroups = messages
+        .OrderByDescending(m => m.Time)
+        .GroupBy(m => m.Name)
+        .ToList();
+
+    for (int i = 0; i < orderedGroups.Count; i++)
     {
-        var kernel = Kernel.CreateBuilder()  
-            .AddGoogleAIGeminiChatCompletion(  
-                modelId: "gemini-2.5-flash",  
-                apiKey: "hello")  
-            .Build();  
+        var group = orderedGroups[i];
+        var position = i == 0 ? ChatBubblePosition.Start : ChatBubblePosition.End;
+        <MudGrid Justify=Justify.Center Spacing="3" Class="p-4">
+            <MudItem xs="12" sm="8" >
+                <MudPaper Class="m-2 p-2">
+                    <MudChat ChatPosition="@position">
+                        <MudAvatar>@group.First().Initials</MudAvatar>
+                        <MudChatHeader Name="@group.Key" Time="@group.First().Time" />
+                        @foreach (var message in group.OrderByDescending(m => m.Time))
+                        {
+                            <MudChatBubble OnClick="(MouseEventArgs args) => ClickMessage(args, message)"
+                                           OnContextClick="(MouseEventArgs args) => RightClickMessage(args, message)">
+                                @message.Text
+                            </MudChatBubble>
+                        }
+                    </MudChat>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+}
 
-        var approvalMCPClient = await McpClientFactory.CreateAsync(
-            new SseClientTransport(new SseClientTransportOptions()
-            {
-                Endpoint = new Uri("http://localhost:8011/sse")
-            }),
-            new McpClientOptions()
-            { 
-                ClientInfo = new() { Name = "ApprovalMCPClient", Version = "1.0.0" } 
-            });
+<MudMenu PositionAtCursor="true" @ref="_contextMenu" id="_contextMenu">
+    <MudMenuItem Icon="@Icons.Material.Filled.Block" OnClick="@BanUser">
+        Ban @_selectedMessage?.Name
+    </MudMenuItem>
+    <MudMenuItem Icon="@Icons.Material.Filled.Info" OnClick="@ShowHiddenInfo">
+        View Details for @_selectedMessage?.Name
+    </MudMenuItem>
+</MudMenu>
 
-        var approvalTools = await approvalMCPClient.ListToolsAsync();
+@code {
+#pragma warning disable SKEXP0070
 
-        // Print approval mcp tools
-        foreach (var tool in approvalTools)
+    private List<Message> messages = new();
+    private Message? _selectedMessage;
+    private MudMenu? _contextMenu;
+
+    protected override async Task OnInitializedAsync()
+    {
+        messages.Add(new Message("Obi-Wan Kenobi", "OK", "You were my brother Anakin.", "2 hours ago"));
+        messages.Add(new Message("Obi-Wan Kenobi", "OK", "I loved you.", "2 hours ago"));
+        messages.Add(new Message("Anakin Skywalker", "AS", "I'm sorry.", "1 hour ago"));
+        await Task.CompletedTask;
+        //     var kernel = Kernel.CreateBuilder()
+        //         .AddGoogleAIGeminiChatCompletion(
+        //             modelId: "gemini-2.5-flash",
+        //             apiKey: "hello")
+        //         .Build();
+
+        //     var approvalMCPClient = await McpClientFactory.CreateAsync(
+        //         new SseClientTransport(new SseClientTransportOptions()
+        //         {
+        //             Endpoint = new Uri("http://localhost:8011/sse")
+        //         }),
+        //         new McpClientOptions()
+        //         {
+        //             ClientInfo = new() { Name = "ApprovalMCPClient", Version = "1.0.0" }
+        //         });
+
+        //     var approvalTools = await approvalMCPClient.ListToolsAsync();
+
+        //     // Print approval mcp tools
+        //     foreach (var tool in approvalTools)
+        //     {
+        //         Console.WriteLine($" - {tool.Name}: {tool.Description}");
+        //     }
+
+        //     var provisioningMCPClient = await McpClientFactory.CreateAsync(
+        //         new SseClientTransport(new SseClientTransportOptions()
+        //         {
+        //             Endpoint = new Uri("http://localhost:8013/sse")
+        //         }),
+        //         new McpClientOptions()
+        //         {
+        //             ClientInfo = new() { Name = "ProvisioningMCPClient", Version = "1.0.0" }
+        //         });
+
+        //     var provisioningTools = await provisioningMCPClient.ListToolsAsync();
+
+        //     // Print provisioning mcp tools
+        //     foreach (var tool in provisioningTools)
+        //     {
+        //         Console.WriteLine($" - {tool.Name}: {tool.Description}");
+        //     }
+
+        //     var requestIntakeMCPClient = await McpClientFactory.CreateAsync(
+        //         new SseClientTransport(new SseClientTransportOptions()
+        //         {
+        //             Endpoint = new Uri("http://localhost:8014/sse")
+        //         }),
+        //         new McpClientOptions()
+        //         {
+        //             ClientInfo = new() { Name = "RequestIntakeMCPClient", Version = "1.0.0" }
+        //         });
+
+        //     var requestIntakeTools = await requestIntakeMCPClient.ListToolsAsync();
+
+        //     // Print provisioning mcp tools
+        //     foreach (var tool in requestIntakeTools)
+        //     {
+        //         Console.WriteLine($" - {tool.Name}: {tool.Description}");
+        //     }
+    }
+
+    private void ShowHiddenInfo()
+    {
+        if (_selectedMessage is not null)
         {
-            Console.WriteLine($" - {tool.Name}: {tool.Description}");
+            Snackbar.Add($"Hidden information for {_selectedMessage.Name}", Severity.Info);
         }
+    }
 
-        var provisioningMCPClient = await McpClientFactory.CreateAsync(
-            new SseClientTransport(new SseClientTransportOptions()
-            {
-                Endpoint = new Uri("http://localhost:8013/sse")
-            }),
-            new McpClientOptions()
-            {
-                ClientInfo = new() { Name = "ProvisioningMCPClient", Version = "1.0.0" }
-            });
-
-        var provisioningTools = await provisioningMCPClient.ListToolsAsync();
-
-        // Print provisioning mcp tools
-        foreach (var tool in provisioningTools)
+    private void BanUser()
+    {
+        if (_selectedMessage is not null)
         {
-            Console.WriteLine($" - {tool.Name}: {tool.Description}");
+            Snackbar.Add($"{_selectedMessage.Name} has been banned!", Severity.Error);
         }
+    }
 
-        var requestIntakeMCPClient = await McpClientFactory.CreateAsync(
-            new SseClientTransport(new SseClientTransportOptions()
-            {
-                Endpoint = new Uri("http://localhost:8014/sse")
-            }),
-            new McpClientOptions()
-            {
-                ClientInfo = new() { Name = "RequestIntakeMCPClient", Version = "1.0.0" }
-            });
+    private async Task RightClickMessage(MouseEventArgs args, Message message)
+    {
+        _selectedMessage = message;
+        if (_contextMenu != null)
+            await _contextMenu.OpenMenuAsync(args);
+    }
 
-        var requestIntakeTools = await requestIntakeMCPClient.ListToolsAsync();
+    private async Task ClickMessage(MouseEventArgs args, Message message)
+    {
+        _selectedMessage = message;
+        Snackbar.Add("Message clicked: " + message.Text, Severity.Info);
+        await Task.CompletedTask;
+    }
 
-        // Print provisioning mcp tools
-        foreach (var tool in requestIntakeTools)
-        {
-            Console.WriteLine($" - {tool.Name}: {tool.Description}");
-        }
-    }  
+
+    private record Message(string Name, string Initials, string Text, string Time);
+
 #pragma warning restore SKEXP0070
 }
