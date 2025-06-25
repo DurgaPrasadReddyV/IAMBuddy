@@ -12,6 +12,7 @@ namespace IAMBuddy.ProvisioningMCPServer
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddMcpServer()
                 .WithHttpTransport()
+                .WithTools<MathTool>()
                 .WithTools<WeatherTool>();
 
             var app = builder.Build();

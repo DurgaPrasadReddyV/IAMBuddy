@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "IAMBuddy.ConsoleApp": {
+      "commandName": "Project"
+    },
+    "Container (IAMBuddy.ConsoleApp)": {
+      "commandName": "Docker"
+    }
+  }
+}

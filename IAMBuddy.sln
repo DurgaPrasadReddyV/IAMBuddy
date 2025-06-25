@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.WebUI", "IAMBuddy.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.WebUI.Client", "IAMBuddy.WebUI.Client\IAMBuddy.WebUI.Client.csproj", "{FDDC897E-095F-4827-AB5B-84A3523A802B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.ConsoleApp", "IAMBuddy.ConsoleApp\IAMBuddy.ConsoleApp.csproj", "{9B942D19-8D1F-4259-B808-C51A8834C6F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{FDDC897E-095F-4827-AB5B-84A3523A802B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDDC897E-095F-4827-AB5B-84A3523A802B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDDC897E-095F-4827-AB5B-84A3523A802B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B942D19-8D1F-4259-B808-C51A8834C6F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B942D19-8D1F-4259-B808-C51A8834C6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B942D19-8D1F-4259-B808-C51A8834C6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B942D19-8D1F-4259-B808-C51A8834C6F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -118,6 +124,7 @@ Global
 		{C9156893-0CBF-4C14-98BC-8D6EF4FCD46A} = {532A239A-7D57-4A67-985B-ADF20B0D65F5}
 		{64A2CF24-DA4E-411B-BF44-0FAFFE118F8D} = {2B2F9529-D733-4DB6-B061-3C72FC5808C2}
 		{FDDC897E-095F-4827-AB5B-84A3523A802B} = {2B2F9529-D733-4DB6-B061-3C72FC5808C2}
+		{9B942D19-8D1F-4259-B808-C51A8834C6F4} = {2B2F9529-D733-4DB6-B061-3C72FC5808C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93606EA5-9687-4991-915F-CC6615E24901}

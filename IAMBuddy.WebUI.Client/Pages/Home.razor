@@ -61,7 +61,7 @@
         var kernel = Kernel.CreateBuilder()
             .AddGoogleAIGeminiChatCompletion(
                 modelId: "gemini-2.5-flash",
-                apiKey: "hello")
+                apiKey: "Provide Gemini API Key")
             .Build();
 
         var approvalMCPClient = await McpClientFactory.CreateAsync(
