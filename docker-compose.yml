@@ -11,6 +11,19 @@ services:
     ports:
       - "5432:5432"
 
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "SimplePass123"
+      ACCEPT_EULA: "Y"
+      MSSQL_ENABLE_HADR: 1
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - iam-buddy-network
+    ports:
+      - "1433:1433"
+
   pgadmin:
     image: dpage/pgadmin4
     depends_on:
@@ -189,6 +202,21 @@ services:
       - "8014:80"
       - "44314:443" 
 
+  mssql-account-manager:
+    build:
+      context: .
+      dockerfile: IAMBuddy.MSSQLAccountManager/Dockerfile
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=IAMBuddyAccountManager;User Id=sa;Password=SimplePass123;TrustServerCertificate=true;MultipleActiveResultSets=true
+    networks:
+      - iam-buddy-network
+    ports:
+      - "8005:80"
+
   # web-ui:
   #   build:
   #     context: .
@@ -210,3 +238,6 @@ networks:
   iam-buddy-network:
     driver: bridge
     name: iam-buddy-network
+
+volumes:
+  sqlserver-data:
