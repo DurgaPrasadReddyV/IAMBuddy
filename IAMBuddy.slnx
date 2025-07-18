@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="Agents/Agents.csproj" />
+  <Project Path="AppHost/AppHost.csproj" />
+  <Project Path="ServiceDefaults/ServiceDefaults.csproj" />
+  <Project Path="Tools/Tools.csproj" />
+</Solution>

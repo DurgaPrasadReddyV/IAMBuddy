@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+
+	<PropertyGroup>
+		<AssemblyName>IAMBuddy.AppHost</AssemblyName>
+		<RootNamespace>IAMBuddy.AppHost</RootNamespace>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsAspireHost>true</IsAspireHost>
+		<UserSecretsId>e0702531-afc0-4f25-811e-dbae92fb7944</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Agents\Agents.csproj" />
+	  <ProjectReference Include="..\Tools\Tools.csproj" />
+	</ItemGroup>
+
+</Project>
