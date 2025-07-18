@@ -13,14 +13,14 @@ namespace IAMBuddy.ProvisioningMCPServer
             builder.Services.AddMcpServer()
                 .WithHttpTransport()
                 .WithTools<MathTool>()
-                .WithTools<WeatherTool>();
+                .WithTools<ScientificMathTool>()
+                .WithTools<DayCheckTool>();
 
             var app = builder.Build();
 
-            app.MapMcp();
+            app.MapMcp();           
 
             app.Run();
-
         }
     }
 }

@@ -1,0 +1,6 @@
+@IAMBuddy.Agent.Approval_HostAddress = http://localhost:5191
+
+GET {{IAMBuddy.Agent.Approval_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

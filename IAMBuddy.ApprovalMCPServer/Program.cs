@@ -10,7 +10,7 @@ namespace IAMBuddy.ApprovalMCPServer
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddMcpServer()
                 .WithHttpTransport()
-                .WithTools<TimeTool>()
+                .WithTools<ScientificMathTool>()
                 .WithTools<EchoTool>();
 
             var app = builder.Build();

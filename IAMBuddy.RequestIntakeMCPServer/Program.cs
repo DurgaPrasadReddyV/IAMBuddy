@@ -10,7 +10,7 @@ namespace IAMBuddy.RequestIntakeMCPServer
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddMcpServer()
                 .WithHttpTransport()
-                .WithTools<JokesTool>();
+                .WithTools<DayCheckTool>();
 
             var app = builder.Build();
 

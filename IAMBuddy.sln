@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.env = .env
 		development-sql.yaml = development-sql.yaml
 		docker-compose.yml = docker-compose.yml
+		DockerBuild.ps1 = DockerBuild.ps1
 		servers.json = servers.json
 	EndProjectSection
 EndProject
@@ -54,6 +55,20 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.ConsoleApp", "IAMBuddy.ConsoleApp\IAMBuddy.ConsoleApp.csproj", "{9B942D19-8D1F-4259-B808-C51A8834C6F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.MSSQLAccountManager", "IAMBuddy.MSSQLAccountManager\IAMBuddy.MSSQLAccountManager.csproj", "{2A1C3E45-F6D8-4B9A-9C2E-8F7A6B5D4E3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.MCPClientsService", "IAMBuddy.MCPClientsService\IAMBuddy.MCPClientsService.csproj", "{C3A80D72-BC03-4967-AEAF-F03A909BD0B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{7F651866-78EF-4984-A241-858E77D1B48C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orchestrator", "Orchestrator", "{DD3556F8-A090-4C90-B865-A8AACEB200F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.Agent.Provisioning", "IAMBuddy.Agent.Provisioning\IAMBuddy.Agent.Provisioning.csproj", "{8BC4294F-BAF3-4810-A9D7-F706D01FCAC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.Orchestrator", "IAMBuddy.Orchestrator\IAMBuddy.Orchestrator.csproj", "{F391B451-1E94-466E-89C2-78898EE86423}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.Agent.Approval", "IAMBuddy.Agent.Approval\IAMBuddy.Agent.Approval.csproj", "{B68CD769-3960-44D2-894B-1B2E3AFDA5F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.Agent.RequestIntake", "IAMBuddy.Agent.RequestIntake\IAMBuddy.Agent.RequestIntake.csproj", "{A2BA534E-2BD6-426C-A77F-CBCBD53962E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +128,26 @@ Global
 		{2A1C3E45-F6D8-4B9A-9C2E-8F7A6B5D4E3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A1C3E45-F6D8-4B9A-9C2E-8F7A6B5D4E3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A1C3E45-F6D8-4B9A-9C2E-8F7A6B5D4E3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3A80D72-BC03-4967-AEAF-F03A909BD0B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3A80D72-BC03-4967-AEAF-F03A909BD0B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3A80D72-BC03-4967-AEAF-F03A909BD0B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3A80D72-BC03-4967-AEAF-F03A909BD0B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BC4294F-BAF3-4810-A9D7-F706D01FCAC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BC4294F-BAF3-4810-A9D7-F706D01FCAC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BC4294F-BAF3-4810-A9D7-F706D01FCAC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BC4294F-BAF3-4810-A9D7-F706D01FCAC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F391B451-1E94-466E-89C2-78898EE86423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F391B451-1E94-466E-89C2-78898EE86423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F391B451-1E94-466E-89C2-78898EE86423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F391B451-1E94-466E-89C2-78898EE86423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B68CD769-3960-44D2-894B-1B2E3AFDA5F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B68CD769-3960-44D2-894B-1B2E3AFDA5F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B68CD769-3960-44D2-894B-1B2E3AFDA5F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B68CD769-3960-44D2-894B-1B2E3AFDA5F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2BA534E-2BD6-426C-A77F-CBCBD53962E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2BA534E-2BD6-426C-A77F-CBCBD53962E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2BA534E-2BD6-426C-A77F-CBCBD53962E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2BA534E-2BD6-426C-A77F-CBCBD53962E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,6 +167,11 @@ Global
 		{FDDC897E-095F-4827-AB5B-84A3523A802B} = {2B2F9529-D733-4DB6-B061-3C72FC5808C2}
 		{9B942D19-8D1F-4259-B808-C51A8834C6F4} = {2B2F9529-D733-4DB6-B061-3C72FC5808C2}
 		{2A1C3E45-F6D8-4B9A-9C2E-8F7A6B5D4E3F} = {BF7EFC6F-16FE-4297-9814-0AEFE6088AC7}
+		{C3A80D72-BC03-4967-AEAF-F03A909BD0B5} = {BF7EFC6F-16FE-4297-9814-0AEFE6088AC7}
+		{8BC4294F-BAF3-4810-A9D7-F706D01FCAC6} = {7F651866-78EF-4984-A241-858E77D1B48C}
+		{F391B451-1E94-466E-89C2-78898EE86423} = {DD3556F8-A090-4C90-B865-A8AACEB200F0}
+		{B68CD769-3960-44D2-894B-1B2E3AFDA5F1} = {7F651866-78EF-4984-A241-858E77D1B48C}
+		{A2BA534E-2BD6-426C-A77F-CBCBD53962E3} = {7F651866-78EF-4984-A241-858E77D1B48C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93606EA5-9687-4991-915F-CC6615E24901}

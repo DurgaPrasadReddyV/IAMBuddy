@@ -1,0 +1,6 @@
+@IAMBuddy.Agent.Provisioning_HostAddress = http://localhost:5151
+
+GET {{IAMBuddy.Agent.Provisioning_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
