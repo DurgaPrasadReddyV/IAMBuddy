@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
 		development-sql.yaml = development-sql.yaml
+		docker-compose-agentic.yml = docker-compose-agentic.yml
 		docker-compose.yml = docker-compose.yml
 		servers.json = servers.json
 	EndProjectSection
@@ -54,6 +55,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.ConsoleApp", "IAMBuddy.ConsoleApp\IAMBuddy.ConsoleApp.csproj", "{9B942D19-8D1F-4259-B808-C51A8834C6F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAMBuddy.MSSQLAccountManager", "IAMBuddy.MSSQLAccountManager\IAMBuddy.MSSQLAccountManager.csproj", "{2A1C3E45-F6D8-4B9A-9C2E-8F7A6B5D4E3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{B4D906B1-66A3-47EE-9500-D7B304160C33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
