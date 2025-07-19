@@ -1,6 +1,6 @@
 namespace IAMBuddy.Tools.Data.Entities;
 
-public class Permission : AuditableEntity
+public class DatabasePermission : AuditableEntity
 {
     public int Id { get; set; }
     public string PermissionName { get; set; } = string.Empty;

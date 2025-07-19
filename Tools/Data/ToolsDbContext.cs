@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
+namespace IAMBuddy.Tools.Data;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using IAMBuddy.Tools.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-public class ToolsDbContext : DbContext
+public class ToolsDbContext(DbContextOptions<ToolsDbContext> options) : DbContext(options)
 {
-    public ToolsDbContext(DbContextOptions<ToolsDbContext> options) : base(options)
-    {
-    }
 
     // DbSets for all entities
     public DbSet<HumanIdentity> HumanIdentities { get; set; } = null!;
@@ -31,7 +25,7 @@ public class ToolsDbContext : DbContext
     public DbSet<ServerRole> ServerRoles { get; set; } = null!;
     public DbSet<DatabaseUser> DatabaseUsers { get; set; } = null!;
     public DbSet<DatabaseRole> DatabaseRoles { get; set; } = null!;
-    public DbSet<Permission> Permissions { get; set; } = null!;
+    public DbSet<DatabasePermission> Permissions { get; set; } = null!;
     public DbSet<ServerLoginRole> ServerLoginRoles { get; set; } = null!;
     public DbSet<DatabaseUserRole> DatabaseUserRoles { get; set; } = null!;
     public DbSet<AdminAuditLog> AdminAuditLogs { get; set; } = null!;
@@ -53,39 +47,8 @@ public class ToolsDbContext : DbContext
                 {
                     var converterType = typeof(EnumToStringConverter<>).MakeGenericType(property.ClrType);
                     var converterInstance = Activator.CreateInstance(converterType, null);
-                    property.SetValueConverter((ValueConverter)converterInstance);
+                    property.SetValueConverter(converterInstance as ValueConverter);
                 }
-            }
-        }
-
-        //this.ConfigurePostgreSqlSpecifics(modelBuilder);
-    }
-
-    private void ConfigurePostgreSqlSpecifics(ModelBuilder modelBuilder)
-    {
-        // Use snake_case naming convention for PostgreSQL
-        foreach (var entity in modelBuilder.Model.GetEntityTypes())
-        {
-            entity.SetTableName(entity.GetTableName()?.ToSnakeCase());
-
-            foreach (var property in entity.GetProperties())
-            {
-                property.SetColumnName(property.GetColumnName().ToSnakeCase());
-            }
-
-            foreach (var key in entity.GetKeys())
-            {
-                key.SetName(key.GetName()?.ToSnakeCase());
-            }
-
-            foreach (var foreignKey in entity.GetForeignKeys())
-            {
-                foreignKey.SetConstraintName(foreignKey.GetConstraintName()?.ToSnakeCase());
-            }
-
-            foreach (var index in entity.GetIndexes())
-            {
-                index.SetDatabaseName(index.GetDatabaseName()?.ToSnakeCase());
             }
         }
     }
@@ -136,22 +99,5 @@ public class EnumToStringConverter<TEnum> : ValueConverter<TEnum, string> where 
             v => v.ToString(),
             v => (TEnum)Enum.Parse(typeof(TEnum), v))
     {
-    }
-}
-
-public static class StringExtensions
-{
-    public static string ToSnakeCase(this string input)
-    {
-        if (string.IsNullOrEmpty(input))
-            return input;
-
-        var result = System.Text.RegularExpressions.Regex.Replace(
-            input,
-            "([a-z0-9])([A-Z])",
-            "$1_$2"
-        ).ToLowerInvariant();
-
-        return result;
     }
 }

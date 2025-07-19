@@ -13,5 +13,5 @@ public class ServerRole : AuditableEntity
     // Navigation properties
     public virtual SqlServer Server { get; set; } = null!;
     public virtual ICollection<ServerLoginRole> ServerLoginRoles { get; set; } = [];
-    public virtual ICollection<Permission> Permissions { get; set; } = [];
+    public virtual ICollection<DatabasePermission> Permissions { get; set; } = [];
 }

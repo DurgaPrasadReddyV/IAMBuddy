@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 // Permission Configuration
-public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
+public class PermissionConfiguration : IEntityTypeConfiguration<DatabasePermission>
 {
-    public void Configure(EntityTypeBuilder<Permission> builder)
+    public void Configure(EntityTypeBuilder<DatabasePermission> builder)
     {
         builder.HasKey(p => p.Id);
         builder.Property(p => p.PermissionName).IsRequired().HasMaxLength(255);

@@ -16,5 +16,5 @@ public class Database : AuditableEntity
     public virtual SqlServerInstance Instance { get; set; } = null!;
     public virtual ICollection<DatabaseUser> DatabaseUsers { get; set; } = [];
     public virtual ICollection<DatabaseRole> DatabaseRoles { get; set; } = [];
-    public virtual ICollection<Permission> Permissions { get; set; } = [];
+    public virtual ICollection<DatabasePermission> Permissions { get; set; } = [];
 }

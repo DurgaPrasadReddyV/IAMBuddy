@@ -1,16 +1,16 @@
+namespace IAMBuddy.Tools.DatabaseGenerator;
 using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using IAMBuddy.Tools.Data;
+using IAMBuddy.Tools.Data.Seeding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Npgsql; // Add this using directive
 
 public class Program
 {
     public static async Task Main(string[] args)
     {
         var hostBuilder = Host.CreateApplicationBuilder(args);
-        hostBuilder.AddNpgsqlDbContext<ToolsDbContext>("ToolsDb");
+        hostBuilder.AddNpgsqlDbContext<ToolsDbContext>("ToolsDb", null, x => { x.EnableSensitiveDataLogging(); x.EnableDetailedErrors(); });
         hostBuilder.Services.AddTransient<DataSeeder>(); // Register the DataSeeder service
 
         var host = hostBuilder.Build();
@@ -21,7 +21,6 @@ public class Program
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<ToolsDbContext>();
             var seeder = services.GetRequiredService<DataSeeder>();
-
             await context.Database.EnsureCreatedAsync(); // Apply pending migrations
 
             // Seed dummy data with default counts

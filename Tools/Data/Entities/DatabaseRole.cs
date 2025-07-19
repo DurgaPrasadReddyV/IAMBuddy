@@ -12,5 +12,5 @@ public class DatabaseRole : AuditableEntity
     // Navigation properties
     public virtual Database Database { get; set; } = null!;
     public virtual ICollection<DatabaseUserRole> DatabaseUserRoles { get; set; } = [];
-    public virtual ICollection<Permission> Permissions { get; set; } = [];
+    public virtual ICollection<DatabasePermission> Permissions { get; set; } = [];
 }
