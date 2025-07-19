@@ -6,6 +6,7 @@
   </Folder>
   <Project Path="Agents/Agents.csproj" />
   <Project Path="AppHost/AppHost.csproj" />
+  <Project Path="DatabaseGenerator/DatabaseGenerator.csproj" Id="5033bb13-1491-4c17-a693-0801c19240df" />
   <Project Path="ServiceDefaults/ServiceDefaults.csproj" />
   <Project Path="Tools/Tools.csproj" />
 </Solution>
