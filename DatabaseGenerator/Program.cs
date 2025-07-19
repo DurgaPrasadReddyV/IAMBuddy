@@ -9,19 +9,11 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        var host = Host.CreateDefaultBuilder(args)
-            .ConfigureServices((context, services) =>
-            {
-                // Get connection string from appsettings.json
-                var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+        var hostBuilder = Host.CreateApplicationBuilder(args);
+        hostBuilder.AddNpgsqlDbContext<ToolsDbContext>("ToolsDb");
+        hostBuilder.Services.AddTransient<DataSeeder>(); // Register the DataSeeder service
 
-                services.AddDbContext<ToolsDbContext>(options =>
-                    options.UseNpgsql(connectionString,
-                        b => b.MigrationsAssembly(typeof(ToolsDbContext).Assembly.FullName)));
-
-                services.AddTransient<DataSeeder>(); // Register the seeder
-            })
-            .Build();
+        var host = hostBuilder.Build();
 
         // Apply migrations and seed data on startup (for development/testing)
         using (var scope = host.Services.CreateScope())
@@ -30,7 +22,7 @@ public class Program
             var context = services.GetRequiredService<ToolsDbContext>();
             var seeder = services.GetRequiredService<DataSeeder>();
 
-            await context.Database.MigrateAsync(); // Apply pending migrations
+            await context.Database.EnsureCreatedAsync(); // Apply pending migrations
 
             // Seed dummy data with default counts
             await seeder.SeedAllDummyData(new DataSeeder.SeedConfiguration());
@@ -39,6 +31,6 @@ public class Program
             await seeder.SeedDefaultSqlServerValues();
         }
 
-        await host.RunAsync();
+        Console.WriteLine("All database operations completed successfully. Application will now exit.");
     }
 }

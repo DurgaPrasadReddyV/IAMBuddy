@@ -58,7 +58,7 @@ public class ToolsDbContext : DbContext
             }
         }
 
-        this.ConfigurePostgreSqlSpecifics(modelBuilder);
+        //this.ConfigurePostgreSqlSpecifics(modelBuilder);
     }
 
     private void ConfigurePostgreSqlSpecifics(ModelBuilder modelBuilder)

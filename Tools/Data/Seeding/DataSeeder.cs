@@ -17,6 +17,9 @@ public class DataSeeder
         Randomizer.Seed = new Random(8675309);
     }
 
+    // Helper method to convert dates to UTC
+    private static DateTime ToUtc(DateTime? dateTime) => dateTime?.ToUniversalTime() ?? DateTime.UtcNow;
+
     public async Task SeedAllDummyData(SeedConfiguration config)
     {
         Console.WriteLine("Starting data seeding...");
@@ -96,15 +99,15 @@ public class DataSeeder
             .RuleFor(hi => hi.CostCenter, f => f.Finance.Account(6))
             .RuleFor(hi => hi.Location, f => f.Address.City())
             .RuleFor(hi => hi.Manager, f => f.Name.FullName())
-            .RuleFor(hi => hi.HireDate, f => f.Date.Past(10))
-            .RuleFor(hi => hi.TerminationDate, (f, hi) => f.Date.Between(hi.HireDate.GetValueOrDefault(), DateTime.Now).OrNull(f, 0.2f))
+            .RuleFor(hi => hi.HireDate, f => ToUtc(f.Date.Past(10)))
+            .RuleFor(hi => hi.TerminationDate, (f, hi) => ToUtc(f.Date.Between(hi.HireDate.GetValueOrDefault(), DateTime.UtcNow).OrNull(f, 0.2f)))
             .RuleFor(hi => hi.Status, f => f.PickRandom<HumanIdentityStatus>())
             .RuleFor(hi => hi.EmployeeId, f => f.Finance.Account(8))
             .RuleFor(hi => hi.Company, f => f.Company.CompanyName())
             .RuleFor(hi => hi.IsContractor, f => f.Random.Bool(0.2f))
-            .RuleFor(hi => hi.ContractEndDate, (f, hi) => hi.IsContractor ? f.Date.Future(2) : (DateTime?)null)
+            .RuleFor(hi => hi.ContractEndDate, (f, hi) => hi.IsContractor ? ToUtc(f.Date.Future(2)) : null)
             .RuleFor(hi => hi.Description, f => f.Lorem.Sentence())
-            .RuleFor(hi => hi.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(hi => hi.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(hi => hi.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(count);
@@ -135,15 +138,15 @@ public class DataSeeder
             .RuleFor(ba => ba.BusinessContact, f => f.Internet.Email())
             .RuleFor(ba => ba.VendorName, f => f.Company.CompanyName())
             .RuleFor(ba => ba.Version, f => f.System.Semver())
-            .RuleFor(ba => ba.GoLiveDate, f => f.Date.Past(5))
-            .RuleFor(ba => ba.EndOfLifeDate, (f, ba) => f.Date.Future(5).OrNull(f, 0.1f))
+            .RuleFor(ba => ba.GoLiveDate, f => ToUtc(f.Date.Past(5)))
+            .RuleFor(ba => ba.EndOfLifeDate, (f, ba) => ToUtc(f.Date.Future(5).OrNull(f, 0.1f)))
             .RuleFor(ba => ba.AnnualCost, f => f.Finance.Amount(1000, 100000))
             .RuleFor(ba => ba.ComplianceRequirements, f => f.Lorem.Sentence())
             .RuleFor(ba => ba.DataClassification, f => f.PickRandom(new[] { "Public", "Internal", "Confidential", "Highly Confidential" }))
             .RuleFor(ba => ba.IsCustomDeveloped, f => f.Random.Bool())
             .RuleFor(ba => ba.SourceCodeRepository, (f, ba) => ba.IsCustomDeveloped ? f.Internet.UrlWithPath("github.com") : null)
             .RuleFor(ba => ba.DocumentationLink, f => f.Internet.Url())
-            .RuleFor(ba => ba.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(ba => ba.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(ba => ba.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(count);
@@ -168,7 +171,7 @@ public class DataSeeder
             .RuleFor(ss => ss.ServicePack, f => f.PickRandom(new[] { "SP1", "SP2", "CU1", "RTM" }))
             .RuleFor(ss => ss.IsActive, f => f.Random.Bool())
             .RuleFor(ss => ss.Description, f => f.Lorem.Sentence())
-            .RuleFor(ss => ss.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(ss => ss.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(ss => ss.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(count);
@@ -183,20 +186,43 @@ public class DataSeeder
         if (await this._context.SqlServerInstances.AnyAsync() || !sqlServers.Any())
             return [];
 
+        var possibleNames = new[] { "MSSQLSERVER", "PROD", "DEV", "UAT" };
+        var entities = new List<SqlServerInstance>();
         var faker = new Faker<SqlServerInstance>()
             .RuleFor(ssi => ssi.Id, f => 0)
-            .RuleFor(ssi => ssi.ServerId, f => f.PickRandom(sqlServers).Id)
-            .RuleFor(ssi => ssi.Name, (f, ssi) => f.PickRandom(new[] { "MSSQLSERVER", "PROD", "DEV", "UAT" }) + (f.Random.Bool(0.7f) ? "" : $"_{f.Random.AlphaNumeric(4).ToUpperInvariant()}"))
             .RuleFor(ssi => ssi.Port, f => f.PickRandom(new[] { "1433", "1434", "50000", "50001" }))
-            .RuleFor(ssi => ssi.ServiceName, (f, ssi) => $"MSSQL${ssi.Name}")
             .RuleFor(ssi => ssi.ServiceAccount, f => $"domain\\{f.Internet.UserName()}")
             .RuleFor(ssi => ssi.Collation, f => f.PickRandom(new[] { "SQL_Latin1_General_CP1_CI_AS", "Latin1_General_CI_AS" }))
             .RuleFor(ssi => ssi.IsActive, f => f.Random.Bool())
             .RuleFor(ssi => ssi.Description, f => f.Lorem.Sentence())
-            .RuleFor(ssi => ssi.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(ssi => ssi.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(ssi => ssi.CreatedBy, f => f.Internet.UserName());
 
-        var entities = faker.Generate(sqlServers.Count * 2); // 2 instances per server on average
+        var randomFaker = new Faker(); // For randomization
+
+        foreach (var server in sqlServers)
+        {
+            // Generate 2 unique names per server
+            var usedNames = new HashSet<string>();
+            int instancesPerServer = 2;
+            for (int i = 0; i < instancesPerServer; i++)
+            {
+                string baseName = randomFaker.PickRandom(possibleNames);
+                string name = baseName;
+                int suffix = 1;
+                while (usedNames.Contains(name))
+                {
+                    name = $"{baseName}_{randomFaker.Random.AlphaNumeric(4).ToUpperInvariant()}_{suffix}";
+                    suffix++;
+                }
+                usedNames.Add(name);
+                var instance = faker.Generate();
+                instance.ServerId = server.Id;
+                instance.Name = name;
+                instance.ServiceName = $"MSSQL${name}";
+                entities.Add(instance);
+            }
+        }
         await this._context.SqlServerInstances.AddRangeAsync(entities);
         await this._context.SaveChangesAsync();
         Console.WriteLine($"Seeded {entities.Count} SQL Server Instances.");
@@ -217,7 +243,7 @@ public class DataSeeder
             .RuleFor(db => db.CompatibilityLevel, f => f.PickRandom(new[] { "150", "160", "140" }))
             .RuleFor(db => db.IsActive, f => f.Random.Bool())
             .RuleFor(db => db.Description, f => f.Lorem.Sentence())
-            .RuleFor(db => db.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(db => db.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(db => db.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(sqlServerInstances.Count * 3); // 3 databases per instance on average
@@ -239,8 +265,12 @@ public class DataSeeder
             .RuleFor(bae => bae.EnvironmentName, (f, bae) => bae.Environment.ToString())
             .RuleFor(bae => bae.Description, f => f.Lorem.Sentence())
             .RuleFor(bae => bae.IsActive, f => f.Random.Bool())
-            .RuleFor(bae => bae.Url, (f, bae) => f.Internet.UrlWithPath(bae.BusinessApplication.ShortName?.ToLowerInvariant() ?? "app"))
-            .RuleFor(bae => bae.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(bae => bae.Url, (f, bae) => 
+            {
+                var businessApp = businessApplications.FirstOrDefault(ba => ba.Id == bae.BusinessApplicationId);
+                return f.Internet.UrlWithPath(businessApp?.ShortName?.ToLowerInvariant() ?? "app");
+            })
+            .RuleFor(bae => bae.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(bae => bae.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(count);
@@ -260,9 +290,9 @@ public class DataSeeder
             .RuleFor(batm => batm.HumanIdentityId, f => f.PickRandom(humanIdentities).Id)
             .RuleFor(batm => batm.Role, f => f.PickRandom(new[] { "Developer", "QA Engineer", "Product Manager", "Scrum Master", "Business Analyst" }))
             .RuleFor(batm => batm.IsPrimary, f => f.Random.Bool())
-            .RuleFor(batm => batm.StartDate, f => f.Date.Past(2))
-            .RuleFor(batm => batm.EndDate, (f, batm) => f.Date.Future(1).OrNull(f, 0.4f))
-            .RuleFor(batm => batm.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(batm => batm.StartDate, f => ToUtc(f.Date.Past(2)))
+            .RuleFor(batm => batm.EndDate, (f, batm) => ToUtc(f.Date.Future(1).OrNull(f, 0.4f)))
+            .RuleFor(batm => batm.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(batm => batm.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(count);
@@ -283,17 +313,21 @@ public class DataSeeder
             .RuleFor(nhi => nhi.Type, f => f.PickRandom<NonHumanIdentityType>())
             .RuleFor(nhi => nhi.Status, f => f.PickRandom<NonHumanIdentityStatus>())
             .RuleFor(nhi => nhi.BusinessApplicationId, f => f.PickRandom(businessApplications).Id)
-            .RuleFor(nhi => nhi.BusinessApplicationEnvironmentId, (f, nhi) => f.PickRandom(environments.Where(e => e.BusinessApplicationId == nhi.BusinessApplicationId)).Id.OrNull(f, 0.3f))
+            .RuleFor(nhi => nhi.BusinessApplicationEnvironmentId, (f, nhi) => {
+                var envs = environments.Where(e => e.BusinessApplicationId == nhi.BusinessApplicationId).ToList();
+                if (envs.Count == 0) return null;
+                return f.PickRandom(envs).Id.OrNull(f, 0.3f);
+            })
             .RuleFor(nhi => nhi.PrimaryOwnerId, f => f.PickRandom(humanIdentities).Id)
             .RuleFor(nhi => nhi.AlternateOwnerId, (f, nhi) => f.PickRandom(humanIdentities.Where(hi => hi.Id != nhi.PrimaryOwnerId)).Id.OrNull(f, 0.3f))
             .RuleFor(nhi => nhi.Purpose, f => f.Lorem.Sentence())
             .RuleFor(nhi => nhi.TechnicalContact, f => f.Internet.Email())
-            .RuleFor(nhi => nhi.ExpirationDate, f => f.Date.Future(3).OrNull(f, 0.2f))
-            .RuleFor(nhi => nhi.LastAccessDate, f => f.Date.Past(1))
+            .RuleFor(nhi => nhi.ExpirationDate, f => ToUtc(f.Date.Future(3).OrNull(f, 0.2f)))
+            .RuleFor(nhi => nhi.LastAccessDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(nhi => nhi.AccessFrequency, f => f.PickRandom(new[] { "Daily", "Weekly", "Monthly", "Rarely" }))
             .RuleFor(nhi => nhi.IsGeneric, f => f.Random.Bool(0.1f))
             .RuleFor(nhi => nhi.Description, f => f.Lorem.Sentence())
-            .RuleFor(nhi => nhi.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(nhi => nhi.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(nhi => nhi.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(count);
@@ -312,15 +346,15 @@ public class DataSeeder
             .RuleFor(ada => ada.AccountType, f => f.PickRandom<ActiveDirectoryAccountType>())
             .RuleFor(ada => ada.Domain, f => f.PickRandom(new[] { "corp.example.com", "dev.example.com", "contoso.local" }))
             .RuleFor(ada => ada.IsEnabled, f => f.Random.Bool())
-            .RuleFor(ada => ada.LastLogonDate, f => f.Date.Recent().OrNull(f, 0.1f))
-            .RuleFor(ada => ada.PasswordLastSetDate, f => f.Date.Past(1))
-            .RuleFor(ada => ada.AccountExpirationDate, (f, ada) => ada.IsEnabled ? f.Date.Future(2).OrNull(f, 0.2f) : null)
+            .RuleFor(ada => ada.LastLogonDate, f => ToUtc(f.Date.Recent().OrNull(f, 0.1f)))
+            .RuleFor(ada => ada.PasswordLastSetDate, f => ToUtc(f.Date.Past(1)))
+            .RuleFor(ada => ada.AccountExpirationDate, (f, ada) => ada.IsEnabled ? ToUtc(f.Date.Future(2).OrNull(f, 0.2f)) : null)
             .RuleFor(ada => ada.PasswordNeverExpires, f => f.Random.Bool(0.1f))
             .RuleFor(ada => ada.UserCannotChangePassword, f => f.Random.Bool(0.1f))
             .RuleFor(ada => ada.ServicePrincipalNames, (f, ada) => ada.AccountType == ActiveDirectoryAccountType.ServiceAccount ? System.Text.Json.JsonSerializer.Serialize(f.Make(f.Random.Int(1, 3), () => f.Internet.DomainName())) : null)
             .RuleFor(ada => ada.ManagedBy, f => f.Internet.Email())
             .RuleFor(ada => ada.Description, f => f.Lorem.Sentence())
-            .RuleFor(ada => ada.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(ada => ada.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(ada => ada.CreatedBy, f => f.Internet.UserName())
             .RuleFor(ada => ada.HumanIdentityId, (f, ada) =>
             {
@@ -337,39 +371,102 @@ public class DataSeeder
                     return f.PickRandom(nonHumanIdentities).Id;
                 }
                 return (int?)null;
-            })
-            .RuleFor(ada => ada.SamAccountName, (f, ada) =>
-            {
-                if (ada.HumanIdentityId.HasValue)
-                {
-                    var human = humanIdentities.FirstOrDefault(hi => hi.Id == ada.HumanIdentityId.Value);
-                    return $"{human?.FirstName.ToLowerInvariant() ?? f.Internet.UserName()}{human?.LastName.ToLowerInvariant().Substring(0, 1) ?? f.Random.AlphaNumeric(1)}{f.Random.Int(1, 99):00}";
-                }
-                else if (ada.NonHumanIdentityId.HasValue)
-                {
-                    var nonHuman = nonHumanIdentities.FirstOrDefault(nhi => nhi.Id == ada.NonHumanIdentityId.Value);
-                    return $"svc_{nonHuman?.Name.ToLowerInvariant().Replace(" ", "") ?? f.Internet.UserName()}";
-                }
-                return f.Internet.UserName();
-            })
-            .RuleFor(ada => ada.UserPrincipalName, (f, ada) => $"{ada.SamAccountName}@{ada.Domain}")
-            .RuleFor(ada => ada.DisplayName, (f, ada) =>
-            {
-                if (ada.HumanIdentityId.HasValue)
-                {
-                    var human = humanIdentities.FirstOrDefault(hi => hi.Id == ada.HumanIdentityId.Value);
-                    return $"{human?.FirstName} {human?.LastName}";
-                }
-                else if (ada.NonHumanIdentityId.HasValue)
-                {
-                    var nonHuman = nonHumanIdentities.FirstOrDefault(nhi => nhi.Id == ada.NonHumanIdentityId.Value);
-                    return nonHuman?.DisplayName;
-                }
-                return ada.SamAccountName;
-            })
-            .RuleFor(ada => ada.DistinguishedName, (f, ada) => $"CN={ada.DisplayName},OU=Users,DC={ada.Domain.Replace(".", ",DC=")}");
+            });
 
-        var entities = faker.Generate(count);
+        var entities = new List<ActiveDirectoryAccount>();
+        var samAccountNameCache = new HashSet<string>();
+        var upnCache = new HashSet<string>();
+        var distinguishedNameCache = new HashSet<string>();
+        var randomizer = new Randomizer();
+
+        int attempts = 0;
+        int maxAttempts = count * 2; // Set a reasonable limit to prevent infinite loops
+        
+        while (entities.Count < count && attempts < maxAttempts)
+        {
+            var entity = faker.Generate();
+            
+            // Generate SamAccountName based on identity
+            if (entity.HumanIdentityId.HasValue)
+            {
+                var human = humanIdentities.FirstOrDefault(hi => hi.Id == entity.HumanIdentityId.Value);
+                var baseAccountName = $"{human?.FirstName.ToLowerInvariant() ?? randomizer.AlphaNumeric(5)}{human?.LastName.ToLowerInvariant().Substring(0, 1) ?? randomizer.AlphaNumeric(1)}";
+                var samAccountName = baseAccountName;
+                int suffix = 1;
+                while (samAccountNameCache.Contains(samAccountName))
+                {
+                    samAccountName = $"{baseAccountName}{suffix:000}";
+                    suffix++;
+                }
+                entity.SamAccountName = samAccountName;
+            }
+            else if (entity.NonHumanIdentityId.HasValue)
+            {
+                var nonHuman = nonHumanIdentities.FirstOrDefault(nhi => nhi.Id == entity.NonHumanIdentityId.Value);
+                var baseAccountName = $"svc_{nonHuman?.Name.ToLowerInvariant().Replace(" ", "") ?? randomizer.AlphaNumeric(8)}";
+                var samAccountName = baseAccountName;
+                int suffix = 1;
+                while (samAccountNameCache.Contains(samAccountName))
+                {
+                    samAccountName = $"{baseAccountName}_{suffix:000}";
+                    suffix++;
+                }
+                entity.SamAccountName = samAccountName;
+            }
+            else
+            {
+                var baseAccountName = $"generic_{randomizer.AlphaNumeric(8)}";
+                var samAccountName = baseAccountName;
+                int suffix = 1;
+                while (samAccountNameCache.Contains(samAccountName))
+                {
+                    samAccountName = $"{baseAccountName}_{suffix:000}";
+                    suffix++;
+                }
+                entity.SamAccountName = samAccountName;
+            }
+
+            // Generate UPN based on SamAccountName
+            var upn = $"{entity.SamAccountName}@{entity.Domain}";
+            // Set display name based on the account type
+            if (entity.HumanIdentityId.HasValue)
+            {
+                var human = humanIdentities.FirstOrDefault(hi => hi.Id == entity.HumanIdentityId.Value);
+                entity.DisplayName = $"{human?.FirstName} {human?.LastName}";
+            }
+            else if (entity.NonHumanIdentityId.HasValue)
+            {
+                var nonHuman = nonHumanIdentities.FirstOrDefault(nhi => nhi.Id == entity.NonHumanIdentityId.Value);
+                entity.DisplayName = nonHuman?.DisplayName ?? entity.SamAccountName;
+            }
+            else
+            {
+                entity.DisplayName = entity.SamAccountName;
+            }
+
+            // Generate unique distinguished name
+            var baseDn = $"CN={entity.DisplayName},OU=Users,DC={entity.Domain.Replace(".", ",DC=")}";
+            var dn = baseDn;
+            int dnSuffix = 1;
+            while (distinguishedNameCache.Contains(dn))
+            {
+                dn = $"CN={entity.DisplayName}_{dnSuffix},OU=Users,DC={entity.Domain.Replace(".", ",DC=")}";
+                dnSuffix++;
+            }
+            entity.DistinguishedName = dn;
+
+            // Only add if all unique constraints are satisfied
+            if (!samAccountNameCache.Contains(entity.SamAccountName) && !upnCache.Contains(upn) && !distinguishedNameCache.Contains(dn))
+            {
+                entity.UserPrincipalName = upn;
+                samAccountNameCache.Add(entity.SamAccountName);
+                upnCache.Add(upn);
+                distinguishedNameCache.Add(dn);
+                entities.Add(entity);
+            }
+            attempts++;
+        }
+
         await this._context.ActiveDirectoryAccounts.AddRangeAsync(entities);
         await this._context.SaveChangesAsync();
         Console.WriteLine($"Seeded {entities.Count} Active Directory Accounts.");
@@ -390,7 +487,7 @@ public class DataSeeder
             .RuleFor(adg => adg.ManagedBy, (f, adg) => f.Random.Bool(0.7f) && nonHumanIdentities.Any() ? f.PickRandom(nonHumanIdentities).Name : f.Internet.UserName())
             .RuleFor(adg => adg.NonHumanIdentityId, (f, adg) => f.Random.Bool(0.7f) && nonHumanIdentities.Any() ? f.PickRandom(nonHumanIdentities).Id : (int?)null)
             .RuleFor(adg => adg.Description, f => f.Lorem.Sentence())
-            .RuleFor(adg => adg.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(adg => adg.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(adg => adg.CreatedBy, f => f.Internet.UserName())
             .RuleFor(adg => adg.Name, (f, adg) =>
             {
@@ -425,7 +522,7 @@ public class DataSeeder
             .RuleFor(adgm => adgm.ChildGroupId, (f, adgm) => f.Random.Bool(0.3f) && groups.Any() ? f.PickRandom(groups.Where(g => g.Id != adgm.GroupId)).Id : (int?)null) // Ensure no self-referencing
             .RuleFor(adgm => adgm.MemberSince, f => f.Date.Past(1))
             .RuleFor(adgm => adgm.AddedBy, f => f.Internet.UserName())
-            .RuleFor(adgm => adgm.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(adgm => adgm.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(adgm => adgm.CreatedBy, f => f.Internet.UserName());
 
         // Ensure at least one of AccountId or ChildGroupId is set
@@ -464,7 +561,7 @@ public class DataSeeder
             .RuleFor(bar => bar.Environment, f => f.PickRandom<ApplicationEnvironment>())
             .RuleFor(bar => bar.Purpose, f => f.Lorem.Sentence())
             .RuleFor(bar => bar.IsCritical, f => f.Random.Bool(0.3f))
-            .RuleFor(bar => bar.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(bar => bar.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(bar => bar.CreatedBy, f => f.Internet.UserName())
             .RuleFor(bar => bar.ResourceId, (f, bar) =>
             {
@@ -509,12 +606,12 @@ public class DataSeeder
             .RuleFor(sl => sl.Status, f => f.PickRandom<LoginStatus>())
             .RuleFor(sl => sl.DefaultDatabase, f => f.Database.Engine().OrNull(f, 0.2f))
             .RuleFor(sl => sl.DefaultLanguage, f => f.PickRandom(new[] { "us_english", "Japanese", "French" }))
-            .RuleFor(sl => sl.PasswordExpirationDate, f => f.Date.Future(1).OrNull(f, 0.3f))
+            .RuleFor(sl => sl.PasswordExpirationDate, f => ToUtc(f.Date.Future(1).OrNull(f, 0.3f)))
             .RuleFor(sl => sl.IsPasswordExpired, (f, sl) => sl.PasswordExpirationDate.HasValue && sl.PasswordExpirationDate < DateTime.Now)
             .RuleFor(sl => sl.IsLocked, (f, sl) => sl.Status == LoginStatus.Locked)
-            .RuleFor(sl => sl.LastLoginDate, f => f.Date.Recent())
+            .RuleFor(sl => sl.LastLoginDate, f => ToUtc(f.Date.Recent()))
             .RuleFor(sl => sl.Description, f => f.Lorem.Sentence())
-            .RuleFor(sl => sl.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(sl => sl.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(sl => sl.CreatedBy, f => f.Internet.UserName())
             .RuleFor(sl => sl.ActiveDirectoryAccountId, (f, sl) =>
             {
@@ -577,7 +674,7 @@ public class DataSeeder
             .RuleFor(sr => sr.Type, f => RoleType.ServerRole)
             .RuleFor(sr => sr.IsFixedRole, f => f.Random.Bool(0.5f))
             .RuleFor(sr => sr.Description, f => f.Lorem.Sentence())
-            .RuleFor(sr => sr.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(sr => sr.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(sr => sr.CreatedBy, f => f.Internet.UserName())
             .RuleFor(sr => sr.Name, (f, sr) =>
             {
@@ -632,7 +729,7 @@ public class DataSeeder
                     serverLogins.FirstOrDefault(sl => sl.Id == du.ServerLoginId)?.Name : "No associated login";
                 return $"{du.UserType} database user for {loginInfo}";
             })
-            .RuleFor(du => du.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(du => du.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(du => du.CreatedBy, f => f.Internet.UserName())
             .RuleFor(du => du.Name, (f, du) =>
             {
@@ -676,7 +773,7 @@ public class DataSeeder
             .RuleFor(dr => dr.Type, f => RoleType.DatabaseRole)
             .RuleFor(dr => dr.IsFixedRole, f => f.Random.Bool(0.5f))
             .RuleFor(dr => dr.Description, f => f.Lorem.Sentence())
-            .RuleFor(dr => dr.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(dr => dr.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(dr => dr.CreatedBy, f => f.Internet.UserName())
             .RuleFor(dr => dr.Name, (f, dr) =>
             {
@@ -720,9 +817,9 @@ public class DataSeeder
             .RuleFor(p => p.DatabaseRoleId, (f, p) => f.PickRandom(databaseRoles).Id.OrNull(f, 0.3f))
             .RuleFor(p => p.ServerRoleId, (f, p) => f.PickRandom(serverRoles).Id.OrNull(f, 0.1f))
             .RuleFor(p => p.GrantedBy, f => f.Internet.UserName())
-            .RuleFor(p => p.GrantedDate, f => f.Date.Past(1))
+            .RuleFor(p => p.GrantedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(p => p.Description, f => f.Lorem.Sentence())
-            .RuleFor(p => p.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(p => p.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(p => p.CreatedBy, f => f.Internet.UserName());
 
         var entities = faker.Generate(count);
@@ -742,7 +839,7 @@ public class DataSeeder
             .RuleFor(slr => slr.ServerRoleId, f => f.PickRandom(serverRoles).Id)
             .RuleFor(slr => slr.AssignedDate, f => f.Date.Past(1))
             .RuleFor(slr => slr.AssignedBy, f => f.Internet.UserName())
-            .RuleFor(slr => slr.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(slr => slr.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(slr => slr.CreatedBy, f => f.Internet.UserName());
 
         var entities = new List<ServerLoginRole>();
@@ -773,7 +870,7 @@ public class DataSeeder
             .RuleFor(dur => dur.DatabaseRoleId, f => f.PickRandom(databaseRoles).Id)
             .RuleFor(dur => dur.AssignedDate, f => f.Date.Past(1))
             .RuleFor(dur => dur.AssignedBy, f => f.Internet.UserName())
-            .RuleFor(dur => dur.CreatedDate, f => f.Date.Past(1))
+            .RuleFor(dur => dur.CreatedDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(dur => dur.CreatedBy, f => f.Internet.UserName());
 
         var entities = new List<DatabaseUserRole>();
@@ -805,7 +902,7 @@ public class DataSeeder
             .RuleFor(aal => aal.EntityId, f => f.Random.Int(1, 100)) // Assuming entity IDs range from 1 to 100 for dummy data
             .RuleFor(aal => aal.OldValues, f => f.Random.Bool(0.5f) ? System.Text.Json.JsonSerializer.Serialize(new { name = f.Name.FirstName() }) : null)
             .RuleFor(aal => aal.NewValues, f => f.Random.Bool(0.5f) ? System.Text.Json.JsonSerializer.Serialize(new { name = f.Name.FirstName() }) : null)
-            .RuleFor(aal => aal.ActionDate, f => f.Date.Past(1))
+            .RuleFor(aal => aal.ActionDate, f => ToUtc(f.Date.Past(1)))
             .RuleFor(aal => aal.ActionBy, f => f.Internet.UserName())
             .RuleFor(aal => aal.Description, f => f.Lorem.Sentence());
 
