@@ -1,6 +1,8 @@
 namespace IAMBuddy.Tools;
 
+using IAMBuddy.Tools.Data;
 using IAMBuddy.Tools.OpenApi;
+using Microsoft.Extensions.Hosting;
 
 public class Program
 {
@@ -13,6 +15,8 @@ public class Program
                 .WithHttpTransport(o => o.Stateless = true)
                 .WithToolsFromAssembly();
 
+        builder.AddNpgsqlDbContext<ToolsDbContext>("ToolsDb", null, x => { x.EnableSensitiveDataLogging(); x.EnableDetailedErrors(); });
+
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddOpenApi("openapi", o => o.AddDocumentTransformer<McpDocumentTransformer>());
@@ -20,7 +24,7 @@ public class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
 
         app.MapOpenApi("/{documentName}.json");
 
