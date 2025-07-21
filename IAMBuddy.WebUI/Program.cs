@@ -10,7 +10,8 @@ namespace IAMBuddy.WebUI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7175/api/") });
             builder.Services.AddMudServices();
 
             // Add services to the container.

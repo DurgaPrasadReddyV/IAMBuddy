@@ -1,0 +1,230 @@
+@page "/chat"
+@inject HttpClient Http
+
+<style>
+    .fullscreen-chat {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(135deg, #e3eafc 0%, #f6f8fa 100%);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: auto;
+    }
+    .chat-card {
+        width: 100%;
+        max-width: 800px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+        border-radius: 18px;
+        padding: 32px 32px 24px 32px;
+        background: #fff;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+    }
+    .chat-history {
+        flex: 1;
+        overflow-y: auto;
+        margin-bottom: 16px;
+        padding-right: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .chat-bubble {
+        max-width: 70%;
+        padding: 14px 18px;
+        border-radius: 16px;
+        font-size: 1.05rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        word-break: break-word;
+    }
+    .user-message {
+        background: #d6eaff;
+        align-self: flex-end;
+        color: #2d3a4a;
+        border-bottom-right-radius: 4px;
+    }
+    .agent-message {
+        background: #f6f8fa;
+        align-self: flex-start;
+        color: #24292f;
+        border-bottom-left-radius: 4px;
+    }
+    .chat-container textarea {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        border-radius: 10px;
+        border: 1.5px solid #b3c2e1;
+        padding: 16px;
+        font-size: 1.1rem;
+        resize: none;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .chat-container button {
+        border-radius: 10px;
+        font-size: 1.1rem;
+        padding: 12px 0;
+        margin-bottom: 8px;
+    }
+    .enhanced-form {
+        background: #f8fafc;
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        padding: 28px 24px 20px 24px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+    .enhanced-form label {
+        font-weight: 500;
+        color: #2d3a4a;
+        margin-bottom: 6px;
+    }
+    .enhanced-form input {
+        border-radius: 8px;
+        border: 1.5px solid #b3c2e1;
+        padding: 12px;
+        font-size: 1.05rem;
+        margin-bottom: 18px;
+        width: 100%;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .enhanced-form button {
+        border-radius: 10px;
+        font-size: 1.1rem;
+        padding: 12px 0;
+        width: 100%;
+        background: #28a745;
+        color: #fff;
+        border: none;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+</style>
+
+<div class="fullscreen-chat">
+    <h3 style="text-align:center; margin-bottom:24px; color:#2d3a4a;">Chat API Demo</h3>
+    <div class="chat-card">
+        <div class="chat-history">
+            @for (int i = 0; i < chatHistory.Count; i++)
+            {
+                var msg = chatHistory[i];
+                if (msg.IsUser)
+                {
+                    <div class="chat-bubble user-message">@msg.Text</div>
+                }
+                else
+                {
+                    <div class="chat-bubble agent-message">@msg.Text</div>
+                    @* Show form below the last agent message if isSuccess and this is the last message *@
+                    @if (isSuccess && i == chatHistory.Count - 1)
+                    {
+                        <EditForm Model="formModel" OnValidSubmit="HandleFormSubmit" class="enhanced-form">
+                            <h5 style="margin-bottom:18px; color:#0366d6;">Additional Information</h5>
+                            <div>
+                                <label for="name">Name</label>
+                                <InputText id="name" @bind-Value="formModel.Name" />
+                            </div>
+                            <div>
+                                <label for="email">Email</label>
+                                <InputText id="email" @bind-Value="formModel.Email" />
+                            </div>
+                        </EditForm>
+                        @if (!string.IsNullOrEmpty(formResponse))
+                        {
+                            <div style="margin-top:16px; color:green;">@formResponse</div>
+                        }
+                    }
+                }
+            }
+            @if (isLoading)
+            {
+                <div class="chat-bubble agent-message" style="opacity:0.7;">...
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </div>
+            }
+        </div>
+        <div class="chat-container">
+            <textarea @bind="userInput" placeholder="Type your message..." rows="3"></textarea>
+            <button class="btn btn-primary" @onclick="SendMessage" disabled="@(isLoading || string.IsNullOrWhiteSpace(userInput))">Send</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string userInput = string.Empty;
+    private string apiResponse = string.Empty;
+    private bool isLoading = false;
+    private bool isSuccess = false;
+
+    private FormModel formModel = new();
+    private string formResponse = string.Empty;
+
+    private List<ChatMessage> chatHistory = new();
+
+    private async Task SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(userInput))
+        {
+            chatHistory.Add(new ChatMessage { Text = userInput, IsUser = true });
+            isLoading = true;
+            apiResponse = string.Empty;
+            isSuccess = false;
+            var input = userInput;
+            userInput = string.Empty;
+            try
+            {
+                var response = await Http.PostAsJsonAsync("Orchestrator/chat", input);
+                if (response.IsSuccessStatusCode)
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    chatHistory.Add(new ChatMessage { Text = apiResponse, IsUser = false });
+                    isSuccess = true;
+                }
+                else
+                {
+                    apiResponse = $"Error: {response.StatusCode}";
+                    chatHistory.Add(new ChatMessage { Text = apiResponse, IsUser = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                apiResponse = $"Exception: {ex.Message}";
+                chatHistory.Add(new ChatMessage { Text = apiResponse, IsUser = false });
+            }
+            isLoading = false;
+        }
+    }
+
+    private async Task HandleFormSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("Orchestrator/additional-info", formModel);
+        if (response.IsSuccessStatusCode)
+        {
+            formResponse = "Form submitted successfully!";
+        }
+        else
+        {
+            formResponse = $"Form submission failed: {response.StatusCode}";
+        }
+    }
+
+    public class FormModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+    }
+
+    public class ChatMessage
+    {
+        public string Text { get; set; } = string.Empty;
+        public bool IsUser { get; set; }
+    }
+}
