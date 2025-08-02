@@ -15,7 +15,7 @@ public class Program
                 .WithHttpTransport(o => o.Stateless = true)
                 .WithToolsFromAssembly();
 
-        builder.AddNpgsqlDbContext<ToolsDbContext>("ToolsDb", null, x => { x.EnableSensitiveDataLogging(); x.EnableDetailedErrors(); });
+        builder.AddNpgsqlDbContext<IAMBuddyDbContext>("IAMBuddyDb", null, x => { x.EnableSensitiveDataLogging(); x.EnableDetailedErrors(); });
 
         builder.Services.AddHttpContextAccessor();
 

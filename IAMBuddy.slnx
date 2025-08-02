@@ -6,7 +6,10 @@
   </Folder>
   <Project Path="Agents/Agents.csproj" />
   <Project Path="AppHost/AppHost.csproj" />
+  <Project Path="Application/Application.csproj" Id="1a3eca91-fc0b-4364-a68c-4519299a757e" />
   <Project Path="DatabaseGenerator/DatabaseGenerator.csproj" Id="5033bb13-1491-4c17-a693-0801c19240df" />
+  <Project Path="Domain/Domain.csproj" Id="67680104-c824-413e-9203-2cb7b87c44f0" />
+  <Project Path="Infrastructure/Infrastructure.csproj" Id="f13b3799-c8dc-47b1-9132-b4c589b8fadc" />
   <Project Path="ServiceDefaults/ServiceDefaults.csproj" />
   <Project Path="Tools/Tools.csproj" />
 </Solution>

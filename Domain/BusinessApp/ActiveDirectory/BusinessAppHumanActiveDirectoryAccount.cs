@@ -1,0 +1,21 @@
+namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
+
+using IAMBuddy.Domain.Common;
+using IAMBuddy.Domain.Enums;
+
+public class BusinessAppHumanActiveDirectoryAccount : HumanIdentityOwnedResource
+{
+    public string SamAccountName { get; set; } = string.Empty;
+    public string? UserPrincipalName { get; set; }
+    public ActiveDirectoryAccountType AccountType { get; set; } = ActiveDirectoryAccountType.User;
+    public string DistinguishedName { get; set; } = string.Empty;
+    public DateTime? LastLogonDate { get; set; }
+    public DateTime? PasswordLastSetDate { get; set; }
+    public DateTime? AccountExpirationDate { get; set; }
+    public bool PasswordNeverExpires { get; set; }
+    public bool UserCannotChangePassword { get; set; }
+    public string? ServicePrincipalNames { get; set; }
+    public int ActiveDirectoryInstanceId { get; set; }
+    public virtual BusinessAppActiveDirectoryInstance ActiveDirectoryInstance { get; set; } = null!;
+    public virtual ICollection<BusinessAppHumanActiveDirectoryGroupMembership> GroupMemberships { get; set; } = [];
+}

@@ -11,11 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tools\Tools.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.3.1" />
+    <PackageReference Include="Bogus" Version="35.6.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
   </ItemGroup>
 
 </Project>
