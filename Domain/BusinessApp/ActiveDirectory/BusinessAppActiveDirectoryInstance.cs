@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 
 using IAMBuddy.Domain.BusinessApp;
 
-public class BusinessAppActiveDirectoryInstance : AppOwnedBusinessAppResource
+public class BusinessAppActiveDirectoryInstance : BusinessAppOwnedResource
 {
     public string DomainName { get; set; } = string.Empty;
     public string? ForestName { get; set; }

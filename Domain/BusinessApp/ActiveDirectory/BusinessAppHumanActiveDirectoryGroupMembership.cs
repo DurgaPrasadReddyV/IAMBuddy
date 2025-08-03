@@ -1,8 +1,7 @@
 namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 
-using IAMBuddy.Domain.Common;
 
-public class BusinessAppHumanActiveDirectoryGroupMembership : HumanIdentityOwnedResource
+public class BusinessAppHumanActiveDirectoryGroupMembership : BusinessAppUserOwnedResource
 {
     public DateTime? MemberSince { get; set; }
     public string? AddedBy { get; set; }

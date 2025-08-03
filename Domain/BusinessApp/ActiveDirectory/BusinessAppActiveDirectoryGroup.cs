@@ -3,7 +3,7 @@ namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppActiveDirectoryGroup : AppOwnedBusinessAppResource
+public class BusinessAppActiveDirectoryGroup : BusinessAppOwnedResource
 {
     public string SamAccountName { get; set; } = string.Empty;
     public ActiveDirectoryGroupType GroupType { get; set; }

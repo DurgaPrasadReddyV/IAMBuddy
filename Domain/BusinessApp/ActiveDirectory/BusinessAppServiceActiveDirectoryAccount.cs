@@ -3,7 +3,7 @@ namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppServiceActiveDirectoryAccount : AppOwnedBusinessAppResource
+public class BusinessAppServiceActiveDirectoryAccount : BusinessAppOwnedResource
 {
     public string SamAccountName { get; set; } = string.Empty;
     public string? UserPrincipalName { get; set; }

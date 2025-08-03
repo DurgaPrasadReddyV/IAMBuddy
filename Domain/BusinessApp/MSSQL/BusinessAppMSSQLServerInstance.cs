@@ -1,7 +1,7 @@
 namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 using IAMBuddy.Domain.BusinessApp;
 
-public class BusinessAppMSSQLServerInstance : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLServerInstance : BusinessAppOwnedResource
 {
     public string Port { get; set; } = string.Empty;
     public string ServiceName { get; set; } = string.Empty;

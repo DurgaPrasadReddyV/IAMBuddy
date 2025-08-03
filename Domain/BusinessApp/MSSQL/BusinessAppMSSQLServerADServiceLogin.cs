@@ -3,7 +3,7 @@ using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppMSSQLServerADServiceLogin : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLServerADServiceLogin : BusinessAppOwnedResource
 {
     public AuthenticationType AuthenticationType { get; set; }
     public LoginStatus Status { get; set; }

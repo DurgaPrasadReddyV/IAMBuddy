@@ -1,9 +1,8 @@
 namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 using IAMBuddy.Domain.BusinessApp.ActiveDirectory;
-using IAMBuddy.Domain.Common;
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppMSSQLServerADHumanLogin : HumanIdentityOwnedResource
+public class BusinessAppMSSQLServerADHumanLogin : BusinessAppUserOwnedResource
 {
     public AuthenticationType AuthenticationType { get; set; }
     public LoginStatus Status { get; set; }

@@ -1,8 +1,6 @@
 namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 
-using IAMBuddy.Domain.Common;
-
-public class BusinessAppMSSQLDatabaseADHumanUserRole : HumanIdentityOwnedResource
+public class BusinessAppMSSQLDatabaseADHumanUserRole : BusinessAppUserOwnedResource
 {
     public DateTime AssignedDate { get; set; }
     public string? AssignedBy { get; set; }

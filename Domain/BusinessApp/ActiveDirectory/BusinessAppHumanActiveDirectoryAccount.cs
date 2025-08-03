@@ -1,9 +1,8 @@
 namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 
-using IAMBuddy.Domain.Common;
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppHumanActiveDirectoryAccount : HumanIdentityOwnedResource
+public class BusinessAppHumanActiveDirectoryAccount : BusinessAppUserOwnedResource
 {
     public string SamAccountName { get; set; } = string.Empty;
     public string? UserPrincipalName { get; set; }

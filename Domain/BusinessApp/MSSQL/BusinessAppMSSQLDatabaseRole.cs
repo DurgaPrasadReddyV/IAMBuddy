@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppMSSQLDatabaseRole : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLDatabaseRole : BusinessAppOwnedResource
 {
     public int DatabaseId { get; set; }
     public RoleType RoleType { get; set; }

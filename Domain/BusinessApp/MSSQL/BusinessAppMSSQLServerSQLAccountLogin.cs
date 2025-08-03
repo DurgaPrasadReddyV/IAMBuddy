@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppMSSQLServerSQLAccountLogin : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLServerSQLAccountLogin : BusinessAppOwnedResource
 {
     public AuthenticationType AuthenticationType { get; set; }
     public string UserName { get; set; } = string.Empty;

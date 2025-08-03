@@ -3,7 +3,7 @@ namespace IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Common;
 using IAMBuddy.Domain.Enums;
 
-public abstract class BusinessAppResourceIdentity : AuditableEntity
+public class BusinessAppOwnedResourceIdentity : Identity
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -21,7 +21,7 @@ public abstract class BusinessAppResourceIdentity : AuditableEntity
     public int? BusinessAppEnvironmentId { get; set; }
     public virtual BusinessAppEnvironment? BusinessAppEnvironment { get; set; }
     public int PrimaryOwnerId { get; set; }
-    public virtual BusinessAppUser PrimaryOwner { get; set; } = null!;
+    public virtual BusinessAppUserIdentity PrimaryOwner { get; set; } = null!;
     public int? AlternateOwnerId { get; set; }
-    public virtual BusinessAppUser? AlternateOwner { get; set; }
+    public virtual BusinessAppUserIdentity? AlternateOwner { get; set; }
 }

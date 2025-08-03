@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 
 using IAMBuddy.Domain.BusinessApp;
 
-public class BusinessAppServiceActiveDirectoryGroupMembership : AppOwnedBusinessAppResource
+public class BusinessAppServiceActiveDirectoryGroupMembership : BusinessAppOwnedResource
 {
     public DateTime? MemberSince { get; set; }
     public string? AddedBy { get; set; }

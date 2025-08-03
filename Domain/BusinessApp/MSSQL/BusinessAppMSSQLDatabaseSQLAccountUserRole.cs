@@ -1,6 +1,6 @@
 namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 
-public class BusinessAppMSSQLDatabaseSQLAccountUserRole : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLDatabaseSQLAccountUserRole : BusinessAppOwnedResource
 {
     public DateTime AssignedDate { get; set; }
     public string? AssignedBy { get; set; }

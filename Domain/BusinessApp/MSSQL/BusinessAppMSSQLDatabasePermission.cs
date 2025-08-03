@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 
 using IAMBuddy.Domain.Enums;
 
-public class BusinessAppMSSQLDatabasePermission : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLDatabasePermission : BusinessAppOwnedResource
 {
     public string PermissionName { get; set; } = string.Empty;
     public PermissionType PermissionType { get; set; }

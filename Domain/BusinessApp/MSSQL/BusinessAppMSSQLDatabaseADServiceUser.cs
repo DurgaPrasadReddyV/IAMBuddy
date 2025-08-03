@@ -1,6 +1,6 @@
 namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 
-public class BusinessAppMSSQLDatabaseADServiceUser : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLDatabaseADServiceUser : BusinessAppOwnedResource
 {
     public string? DefaultSchema { get; set; }
     public string UserType { get; set; } = string.Empty;

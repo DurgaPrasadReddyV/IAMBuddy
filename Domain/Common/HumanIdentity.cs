@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.Common;
 
 using IAMBuddy.Domain.Enums;
 
-public class HumanIdentity : AuditableEntity
+public class HumanIdentity : Identity
 {
     public int Id { get; set; }
     public string UserId { get; set; } = string.Empty;

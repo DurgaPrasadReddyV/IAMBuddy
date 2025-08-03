@@ -12,8 +12,9 @@ public class IAMBuddyDbContext(DbContextOptions<IAMBuddyDbContext> options) : Db
     public DbSet<AdminAuditLog> AdminAuditLogs { get; set; } = null!;
     public DbSet<HumanIdentity> HumanIdentities { get; set; } = null!;
     public DbSet<BusinessApplication> BusinessApplications { get; set; } = null!;
+    public DbSet<BusinessAppOwnedResourceIdentity> BusinessAppOwnedResourceIdentities { get; set; } = null!;
     public DbSet<BusinessAppEnvironment> BusinessAppEnvironments { get; set; } = null!;
-    public DbSet<BusinessAppUser> BusinessAppUsers { get; set; } = null!;
+    public DbSet<BusinessAppUserIdentity> BusinessAppUsers { get; set; } = null!;
     public DbSet<BusinessAppActiveDirectoryGroup> BusinessAppActiveDirectoryGroups { get; set; } = null!;
     public DbSet<BusinessAppActiveDirectoryInstance> BusinessAppActiveDirectoryInstances { get; set; } = null!;
     public DbSet<BusinessAppHumanActiveDirectoryAccount> BusinessAppHumanActiveDirectoryAccounts { get; set; } = null!;

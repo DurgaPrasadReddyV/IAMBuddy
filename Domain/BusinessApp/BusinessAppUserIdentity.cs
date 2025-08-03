@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp;
 
 using IAMBuddy.Domain.Common;
 
-public class BusinessAppUser : AuditableEntity
+public class BusinessAppUserIdentity : Identity
 {
     public int Id { get; set; }
     public string Role { get; set; } = string.Empty;

@@ -2,7 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 
-public class BusinessAppMSSQLServerADServiceLoginRole : AppOwnedBusinessAppResource
+public class BusinessAppMSSQLServerADServiceLoginRole : BusinessAppOwnedResource
 {
     public DateTime AssignedDate { get; set; }
     public string? AssignedBy { get; set; }
