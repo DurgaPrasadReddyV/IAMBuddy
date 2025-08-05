@@ -1,5 +1,6 @@
 
 using IAMBuddy.ApprovalMCPServer.Tools;
+using IAMBuddy.ApprovalMCPServer.Tools.Notifications;
 
 namespace IAMBuddy.ApprovalMCPServer
 {
@@ -11,6 +12,7 @@ namespace IAMBuddy.ApprovalMCPServer
             builder.Services.AddMcpServer()
                 .WithHttpTransport()
                 .WithTools<ScientificMathTool>()
+                .WithTools<ProvisioningApprovalNotificationTool>()
                 .WithTools<EchoTool>();
 
             var app = builder.Build();

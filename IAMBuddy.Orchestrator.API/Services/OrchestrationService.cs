@@ -28,7 +28,7 @@ public class OrchestratorService
         _httpClientFactory = httpClientFactory;
 
         var builder = Kernel.CreateBuilder()
-            .AddGoogleAIGeminiChatCompletion("gemini-2.0-flash", _configuration["GEMINI_KEY"]!);
+            .AddGoogleAIGeminiChatCompletion("gemini-2.5-flash", _configuration["GEMINI_KEY"]!);
 
         builder.Services.AddHttpClient();
         _kernel = builder.Build();
@@ -95,14 +95,22 @@ public class OrchestratorService
         return agents;
     }
 
-    public async Task<string> GetAgentResponseAsync(string input)
+    public async Task<AgentResponse> GetAgentResponseAsync(string input)
     {
         var agentThread = new ChatHistoryAgentThread();
         var message = new ChatMessageContent(AuthorRole.User, input);
         await foreach (var agentResponse in _chatCompletionAgent.InvokeAsync(message, agentThread))
         {
-            return agentResponse.Message?.Content;
+            var response=new AgentResponse
+            {
+                Message = agentResponse.Message?.Content,
+                PromptTokenCount = Convert.ToInt32(agentResponse.Message?.Metadata?["PromptTokenCount"]),
+                CurrentCandidateTokenCount = Convert.ToInt32(agentResponse.Message?.Metadata?["CurrentCandidateTokenCount"]),
+                CandidatesTokenCount = Convert.ToInt32(agentResponse.Message?.Metadata?["CandidatesTokenCount"]),
+                TotalTokenCount = Convert.ToInt32(agentResponse.Message?.Metadata?["TotalTokenCount"])
+            };           
+            return response;
         }
-        return string.Empty;
+        return new AgentResponse();
     }
 }

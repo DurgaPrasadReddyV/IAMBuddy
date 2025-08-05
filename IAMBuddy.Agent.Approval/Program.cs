@@ -32,6 +32,10 @@ builder.Services.AddA2AWellKnownAgent((provider, builder) =>
             .WithId("scientificmath")
             .WithName("scientificmath")
             .WithDescription("calculated scientific values"))
+         .WithSkill(skill => skill
+            .WithId("ProvisioningApprovalEmail")
+            .WithName("ProvisioningApprovalEmail")
+            .WithDescription("sends Provisioning Approval notification"))
          ;
 });
 
