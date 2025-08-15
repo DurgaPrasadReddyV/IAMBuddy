@@ -1,20 +1,21 @@
 namespace IAMBuddy.Domain.BusinessApp;
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using IAMBuddy.Domain.Common;
 
-public class BusinessAppEnvironment : IAuditableEntity, IHasBusinessApplication
+public class BusinessAppUser : IAuditableEntity, IHasHumanIdentity, IHasBusinessApplication
 {
-    public EBusinessAppEnvironment Environment { get; set; }
-    public string? EnvironmentName { get; set; }
-    public string? Description { get; set; }
-    public bool IsActive { get; set; }
-    public string? Url { get; set; }
+    public string Role { get; set; } = string.Empty;
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
     // IHasBusinessApplication
     public int BusinessApplicationId { get; set; }
     public virtual BusinessApplication BusinessApplication { get; set; } = null!;
+
+    // IHasHumanIdentity
+    public int HumanIdentityId { get; set; }
+    public virtual HumanIdentity HumanIdentity { get; set; } = null!;
 
     // IAuditableEntity
     public int Id { get; set; }
@@ -29,14 +30,4 @@ public class BusinessAppEnvironment : IAuditableEntity, IHasBusinessApplication
     public string? SourceSystem { get; set; }
     public string? SourceObjectId { get; set; }
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
-
-    public enum EBusinessAppEnvironment
-    {
-        Production = 1,
-        UAT = 2,
-        Test = 3,
-        Development = 4,
-        Integration = 5,
-        Staging = 6
-    }
 }

@@ -1,16 +1,18 @@
 namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 
 using System.ComponentModel.DataAnnotations;
-using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Common;
 
-public class BusinessAppMSSQLServer : IBusinessAppOwnedResource
+public class BusinessAppMSSQLServerPermission : IBusinessAppOwnedResource
 {
-    public string HostName { get; set; } = string.Empty;
-    public string IPAddress { get; set; } = string.Empty;
-    public string Edition { get; set; } = string.Empty;
-    public string ServicePack { get; set; } = string.Empty;
-    public virtual ICollection<BusinessAppMSSQLServerInstance> Instances { get; set; } = [];
+    public string PermissionName { get; set; } = string.Empty;
+    public PermissionType Permission { get; set; }
+    public SecurableType Securable { get; set; }
+    public string SecurableName { get; set; } = string.Empty;
+    public string? GrantedBy { get; set; }
+    public DateTime? GrantedDate { get; set; }
+    public int? ServerRoleId { get; set; }
+    public virtual BusinessAppMSSQLServerRole? ServerRole { get; set; }
 
     // IBusinessAppOwnedResource
     public int Id { get; set; }
@@ -39,4 +41,23 @@ public class BusinessAppMSSQLServer : IBusinessAppOwnedResource
 
     public int BusinessAppResourceIdentityId { get; set; }
     public virtual BusinessAppResourceIdentity BusinessAppResourceIdentity { get; set; } = null!;
+
+    public enum SecurableType
+    {
+        Server = 1,
+        Database = 2,
+        Schema = 3,
+        Table = 4,
+        View = 5,
+        StoredProcedure = 6,
+        Function = 7,
+        Column = 8
+    }
+
+    public enum PermissionType
+    {
+        Grant = 1,
+        Deny = 2,
+        Revoke = 3
+    }
 }

@@ -1,16 +1,17 @@
-namespace IAMBuddy.Domain.BusinessApp.MSSQL;
-
+namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Common;
 
-public class BusinessAppMSSQLServer : IBusinessAppOwnedResource
+public class BusinessAppActiveDirectoryDirectoryDomain : IBusinessAppOwnedResource
 {
-    public string HostName { get; set; } = string.Empty;
-    public string IPAddress { get; set; } = string.Empty;
-    public string Edition { get; set; } = string.Empty;
-    public string ServicePack { get; set; } = string.Empty;
-    public virtual ICollection<BusinessAppMSSQLServerInstance> Instances { get; set; } = [];
+    [Required] public string DnsName { get; set; } = null!;     // e.g., corp.contoso.com
+    [Required] public string NetBiosName { get; set; } = null!; // e.g., CORP
+    public string? DomainSid { get; set; }
+    public string? DistinguishedName { get; set; }
+    public int ForestId { get; set; }
+    public virtual BusinessAppActiveDirectoryDirectoryForest Forest { get; set; } = null!;
 
     // IBusinessAppOwnedResource
     public int Id { get; set; }
@@ -25,7 +26,6 @@ public class BusinessAppMSSQLServer : IBusinessAppOwnedResource
     public string? SourceSystem { get; set; }
     public string? SourceObjectId { get; set; }
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
-
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public bool IsActive { get; set; }

@@ -1,10 +1,9 @@
 namespace IAMBuddy.Domain.Common;
 
-using IAMBuddy.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
-public class HumanIdentity : Identity
+public class HumanIdentity : IAuditableEntity, IHasAuthoritativeSource
 {
-    public int Id { get; set; }
     public string UserId { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
@@ -17,7 +16,7 @@ public class HumanIdentity : Identity
     public string? Location { get; set; }
     public DateTime? HireDate { get; set; }
     public DateTime? TerminationDate { get; set; }
-    public HumanIdentityStatus Status { get; set; }
+    public EHumanIdentityStatus Status { get; set; }
     public string? EmployeeId { get; set; }
     public string? Company { get; set; }
     public bool IsContractor { get; set; }
@@ -25,5 +24,30 @@ public class HumanIdentity : Identity
     public string? Description { get; set; }
     public int? ManagerId { get; set; }
     public virtual HumanIdentity? Manager { get; set; }
-    public virtual ICollection<HumanIdentity> DirectReports { get; set; } = [];
+
+    // IHasAuthoritativeSource
+    public int AuthoritativeSourceId { get; set; }
+    public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
+
+    // IAuditableEntity
+    public int Id { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
+    public string? UpdatedBy { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTimeOffset? DeletedAt { get; set; }
+    public string? DeletedBy { get; set; }
+    [Timestamp] public byte[]? RowVersion { get; set; }
+    public string? SourceSystem { get; set; }
+    public string? SourceObjectId { get; set; }
+    public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    public enum EHumanIdentityStatus
+    {
+        Active = 1,
+        Inactive = 2,
+        Terminated = 3,
+        OnLeave = 4
+    }
 }

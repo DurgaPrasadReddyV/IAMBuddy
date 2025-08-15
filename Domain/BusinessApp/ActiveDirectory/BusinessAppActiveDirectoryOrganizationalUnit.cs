@@ -1,16 +1,16 @@
-namespace IAMBuddy.Domain.BusinessApp.MSSQL;
-
+namespace IAMBuddy.Domain.BusinessApp.ActiveDirectory;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.Common;
 
-public class BusinessAppMSSQLServer : IBusinessAppOwnedResource
+public class BusinessAppActiveDirectoryOrganizationalUnit : IBusinessAppOwnedResource
 {
-    public string HostName { get; set; } = string.Empty;
-    public string IPAddress { get; set; } = string.Empty;
-    public string Edition { get; set; } = string.Empty;
-    public string ServicePack { get; set; } = string.Empty;
-    public virtual ICollection<BusinessAppMSSQLServerInstance> Instances { get; set; } = [];
+    [Required] public string DistinguishedName { get; set; } = null!;
+    public int? ParentOuId { get; set; }
+    public List<BusinessAppActiveDirectoryOrganizationalUnit> Children { get; set; } = [];
+    public int DomainId { get; set; }
+    public virtual BusinessAppActiveDirectoryDirectoryDomain Domain { get; set; } = null!;
 
     // IBusinessAppOwnedResource
     public int Id { get; set; }

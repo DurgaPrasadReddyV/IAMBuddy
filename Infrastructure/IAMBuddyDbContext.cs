@@ -11,12 +11,15 @@ public class IAMBuddyDbContext(DbContextOptions<IAMBuddyDbContext> options) : Db
 {
     public DbSet<AdminAuditLog> AdminAuditLogs { get; set; } = null!;
     public DbSet<HumanIdentity> HumanIdentities { get; set; } = null!;
+    public DbSet<AuthoritativeSource> AuthoritativeSources { get; set; } = null!;
     public DbSet<BusinessApplication> BusinessApplications { get; set; } = null!;
-    public DbSet<BusinessAppOwnedResourceIdentity> BusinessAppOwnedResourceIdentities { get; set; } = null!;
+    public DbSet<BusinessAppResourceIdentity> BusinessAppResourceIdentities { get; set; } = null!;
     public DbSet<BusinessAppEnvironment> BusinessAppEnvironments { get; set; } = null!;
-    public DbSet<BusinessAppUserIdentity> BusinessAppUsers { get; set; } = null!;
+    public DbSet<BusinessAppUser> BusinessAppUsers { get; set; } = null!;
+    public DbSet<BusinessAppActiveDirectoryDirectoryForest> BusinessAppActiveDirectoryDirectoryForests { get; set; } = null!;
+    public DbSet<BusinessAppActiveDirectoryDirectoryDomain> BusinessAppActiveDirectoryDirectoryDomains { get; set; } = null!;
+    public DbSet<BusinessAppActiveDirectoryOrganizationalUnit> BusinessAppActiveDirectoryOrganizationalUnits { get; set; } = null!;
     public DbSet<BusinessAppActiveDirectoryGroup> BusinessAppActiveDirectoryGroups { get; set; } = null!;
-    public DbSet<BusinessAppActiveDirectoryInstance> BusinessAppActiveDirectoryInstances { get; set; } = null!;
     public DbSet<BusinessAppHumanActiveDirectoryAccount> BusinessAppHumanActiveDirectoryAccounts { get; set; } = null!;
     public DbSet<BusinessAppHumanActiveDirectoryGroupMembership> BusinessAppHumanActiveDirectoryGroupMemberships { get; set; } = null!;
     public DbSet<BusinessAppServiceActiveDirectoryAccount> BusinessAppServiceActiveDirectoryAccounts { get; set; } = null!;
@@ -41,6 +44,8 @@ public class IAMBuddyDbContext(DbContextOptions<IAMBuddyDbContext> options) : Db
     public DbSet<BusinessAppMSSQLServerADServiceLoginRole> BusinessAppMSSQLServerADServiceLoginRoles { get; set; } = null!;
     public DbSet<BusinessAppMSSQLServerInstance> BusinessAppMSSQLServerInstances { get; set; } = null!;
     public DbSet<BusinessAppMSSQLServerListener> BusinessAppMSSQLServerListeners { get; set; } = null!;
+    public DbSet<BusinessAppMSSQLServerPermission> BusinessAppMSSQLServerPermissions { get; set; } = null!;
+    public DbSet<BusinessAppMSSQLServerRole> BusinessAppMSSQLServerRoles { get; set; } = null!;
     public DbSet<BusinessAppMSSQLServerSQLAccountLogin> BusinessAppMSSQLServerSQLAccountLogins { get; set; } = null!;
     public DbSet<BusinessAppMSSQLServerSQLAccountLoginRole> BusinessAppMSSQLServerSQLAccountLoginRoles { get; set; } = null!;
 
@@ -81,24 +86,30 @@ public class IAMBuddyDbContext(DbContextOptions<IAMBuddyDbContext> options) : Db
     private void ApplyAuditableEntityChanges()
     {
         var entries = this.ChangeTracker.Entries()
-            .Where(e => e.Entity is AuditableEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+            .Where(e => e.Entity is IAuditableEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
 
         var currentDateTime = DateTime.UtcNow; // Use UTC for consistency
         var currentUser = "SystemSeeder"; // Replace with actual user context in a real application
 
         foreach (var entry in entries)
         {
-            var auditableEntity = (AuditableEntity)entry.Entity;
+            var auditableEntity = (IAuditableEntity)entry.Entity;
 
             if (entry.State == EntityState.Added)
             {
-                auditableEntity.CreatedDate = currentDateTime;
+                auditableEntity.CreatedAt = currentDateTime;
                 auditableEntity.CreatedBy = currentUser;
+            }
+            else if (entry.State == EntityState.Deleted)
+            {
+                auditableEntity.DeletedAt = currentDateTime;
+                auditableEntity.DeletedBy = currentUser;
+                auditableEntity.IsDeleted = true;
             }
             else if (entry.State == EntityState.Modified)
             {
-                auditableEntity.ModifiedDate = currentDateTime;
-                auditableEntity.ModifiedBy = currentUser;
+                auditableEntity.UpdatedAt = currentDateTime;
+                auditableEntity.UpdatedBy = currentUser;
             }
         }
     }

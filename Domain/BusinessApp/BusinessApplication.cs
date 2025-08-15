@@ -1,14 +1,13 @@
 namespace IAMBuddy.Domain.BusinessApp;
 
+using System.ComponentModel.DataAnnotations;
 using IAMBuddy.Domain.Common;
-using IAMBuddy.Domain.Enums;
 
-public class BusinessApplication : Resource
+public class BusinessApplication : IResource, IHasPrimaryOwner, IHasSecondaryOwner
 {
-    public string? ShortName { get; set; }
     public string? BusinessPurpose { get; set; }
-    public BusinessAppStatus Status { get; set; }
-    public BusinessAppCriticality Criticality { get; set; }
+    public EBusinessAppStatus Status { get; set; }
+    public EBusinessAppCriticality Criticality { get; set; }
     public string? VendorName { get; set; }
     public string? Version { get; set; }
     public DateTime? GoLiveDate { get; set; }
@@ -20,11 +19,51 @@ public class BusinessApplication : Resource
     public string? SourceCodeRepository { get; set; }
     public string? DocumentationLink { get; set; }
     public int? TechnicalContactId { get; set; }
-    public virtual HumanIdentity TechnicalContact { get; set; } = null!;
+    public virtual BusinessAppUser TechnicalContact { get; set; } = null!;
     public int? BusinessContactId { get; set; }
-    public virtual HumanIdentity BusinessContact { get; set; } = null!;
+    public virtual BusinessAppUser BusinessContact { get; set; } = null!;
+
+    // IHasPrimaryOwner
     public int PrimaryOwnerId { get; set; }
-    public virtual HumanIdentity PrimaryOwner { get; set; } = null!;
-    public int? AlternateOwnerId { get; set; }
-    public virtual HumanIdentity? AlternateOwner { get; set; }
+    public virtual BusinessAppUser PrimaryOwner { get; set; } = null!;
+
+    // IHasSecondaryOwner
+    public int? SecondaryOwnerId { get; set; }
+    public virtual BusinessAppUser? SecondaryOwner { get; set; }
+
+    // IResource
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public bool IsActive { get; set; }
+    public IResource.ResourceType Type { get; set; }
+    public int AuthoritativeSourceId { get; set; }
+    public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
+    public int Id { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
+    public string? UpdatedBy { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTimeOffset? DeletedAt { get; set; }
+    public string? DeletedBy { get; set; }
+    [Timestamp] public byte[]? RowVersion { get; set; }
+    public string? SourceSystem { get; set; }
+    public string? SourceObjectId { get; set; }
+    public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    public enum EBusinessAppCriticality
+    {
+        Critical = 1,
+        High = 2,
+        Medium = 3,
+        Low = 4
+    }
+
+    public enum EBusinessAppStatus
+    {
+        Active = 1,
+        Inactive = 2,
+        Deprecated = 3,
+        UnderDevelopment = 4
+    }
 }
