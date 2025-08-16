@@ -7,7 +7,7 @@ public class AuthoritativeSource : IAuditableEntity
     public string? SourceName { get; set; }
     public string? SourceType { get; set; }
     public string? Description { get; set; }
-    public DateTime? LastSynchronizationTimestamp { get; set; }
+    public DateTimeOffset? LastSynchronizationTimestamp { get; set; }
 
     // IAuditableEntity
     public int Id { get; set; }
@@ -19,7 +19,7 @@ public class AuthoritativeSource : IAuditableEntity
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-    public string? SourceSystem { get; set; }
-    public string? SourceObjectId { get; set; }
+
+
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }

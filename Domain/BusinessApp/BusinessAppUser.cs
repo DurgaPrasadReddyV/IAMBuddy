@@ -6,8 +6,8 @@ using IAMBuddy.Domain.Common;
 public class BusinessAppUser : IAuditableEntity, IHasHumanIdentity, IHasBusinessApplication
 {
     public string Role { get; set; } = string.Empty;
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
+    public DateTimeOffset? StartDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
 
     // IHasBusinessApplication
     public int BusinessApplicationId { get; set; }
@@ -27,7 +27,7 @@ public class BusinessAppUser : IAuditableEntity, IHasHumanIdentity, IHasBusiness
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-    public string? SourceSystem { get; set; }
-    public string? SourceObjectId { get; set; }
+
+
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }

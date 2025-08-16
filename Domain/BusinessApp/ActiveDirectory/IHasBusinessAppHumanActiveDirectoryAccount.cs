@@ -1,6 +1,6 @@
 namespace IAMBuddy.Domain.Common;
 
-using IAMBuddy.Domain.BusinessApp.ActiveDirectory;
+using IAMBuddy.Domain.BusinessApp.ActiveDirectory.Accounts;
 
 internal interface IHasBusinessAppHumanActiveDirectoryAccount
 {

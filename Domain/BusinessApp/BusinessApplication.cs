@@ -10,8 +10,8 @@ public class BusinessApplication : IResource, IHasPrimaryOwner, IHasSecondaryOwn
     public EBusinessAppCriticality Criticality { get; set; }
     public string? VendorName { get; set; }
     public string? Version { get; set; }
-    public DateTime? GoLiveDate { get; set; }
-    public DateTime? EndOfLifeDate { get; set; }
+    public DateTimeOffset? GoLiveDate { get; set; }
+    public DateTimeOffset? EndOfLifeDate { get; set; }
     public decimal? AnnualCost { get; set; }
     public string? ComplianceRequirements { get; set; }
     public string? DataClassification { get; set; }
@@ -35,7 +35,7 @@ public class BusinessApplication : IResource, IHasPrimaryOwner, IHasSecondaryOwn
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public bool IsActive { get; set; }
-    public IResource.ResourceType Type { get; set; }
+    public IResource.EResourceType ResourceType { get; set; }
     public int AuthoritativeSourceId { get; set; }
     public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
     public int Id { get; set; }
@@ -47,8 +47,8 @@ public class BusinessApplication : IResource, IHasPrimaryOwner, IHasSecondaryOwn
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-    public string? SourceSystem { get; set; }
-    public string? SourceObjectId { get; set; }
+
+
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public enum EBusinessAppCriticality

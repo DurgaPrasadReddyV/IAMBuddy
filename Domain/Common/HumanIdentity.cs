@@ -14,13 +14,13 @@ public class HumanIdentity : IAuditableEntity, IHasAuthoritativeSource
     public string? Division { get; set; }
     public string? CostCenter { get; set; }
     public string? Location { get; set; }
-    public DateTime? HireDate { get; set; }
-    public DateTime? TerminationDate { get; set; }
+    public DateTimeOffset? HireDate { get; set; }
+    public DateTimeOffset? TerminationDate { get; set; }
     public EHumanIdentityStatus Status { get; set; }
     public string? EmployeeId { get; set; }
     public string? Company { get; set; }
     public bool IsContractor { get; set; }
-    public DateTime? ContractEndDate { get; set; }
+    public DateTimeOffset? ContractEndDate { get; set; }
     public string? Description { get; set; }
     public int? ManagerId { get; set; }
     public virtual HumanIdentity? Manager { get; set; }
@@ -39,8 +39,8 @@ public class HumanIdentity : IAuditableEntity, IHasAuthoritativeSource
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-    public string? SourceSystem { get; set; }
-    public string? SourceObjectId { get; set; }
+
+
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public enum EHumanIdentityStatus

@@ -12,8 +12,8 @@ public class BusinessAppResourceIdentity : IAuditableEntity, IHasBusinessApplica
     public EBusinessAppResourceIdentityStatus Status { get; set; }
     public string? Purpose { get; set; }
     public string? TechnicalContact { get; set; }
-    public DateTime? ExpirationDate { get; set; }
-    public DateTime? LastAccessDate { get; set; }
+    public DateTimeOffset? ExpirationDate { get; set; }
+    public DateTimeOffset? LastAccessDate { get; set; }
     public string? AccessFrequency { get; set; }
     public string? Description { get; set; }
 
@@ -43,8 +43,8 @@ public class BusinessAppResourceIdentity : IAuditableEntity, IHasBusinessApplica
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-    public string? SourceSystem { get; set; }
-    public string? SourceObjectId { get; set; }
+
+
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public enum EBusinessAppResourceIdentityStatus

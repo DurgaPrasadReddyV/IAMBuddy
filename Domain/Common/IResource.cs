@@ -5,9 +5,9 @@ public interface IResource : IAuditableEntity, IHasAuthoritativeSource
     public string Name { get; set; }
     public string? Description { get; set; }
     public bool IsActive { get; set; }
-    public ResourceType Type { get; set; }
+    public EResourceType ResourceType { get; set; }
 
-    public enum ResourceType
+    public enum EResourceType
     {
         BusinessApplication = 1,
         // Platforms

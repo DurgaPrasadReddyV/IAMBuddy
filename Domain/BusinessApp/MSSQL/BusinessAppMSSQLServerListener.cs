@@ -2,6 +2,7 @@ namespace IAMBuddy.Domain.BusinessApp.MSSQL;
 
 using System.ComponentModel.DataAnnotations;
 using IAMBuddy.Domain.BusinessApp;
+using IAMBuddy.Domain.BusinessApp.MSSQL.Server;
 using IAMBuddy.Domain.Common;
 
 public class BusinessAppMSSQLServerListener : IBusinessAppOwnedResource
@@ -21,14 +22,14 @@ public class BusinessAppMSSQLServerListener : IBusinessAppOwnedResource
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-    public string? SourceSystem { get; set; }
-    public string? SourceObjectId { get; set; }
+
+
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public bool IsActive { get; set; }
-    public IResource.ResourceType Type { get; set; }
+    public IResource.EResourceType ResourceType { get; set; }
 
     public int AuthoritativeSourceId { get; set; }
     public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
