@@ -1,4 +1,4 @@
-namespace IAMBuddy.Tools.Data;
+namespace IAMBuddy.Infrastructure;
 using System.Reflection;
 using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.BusinessApp.ActiveDirectory;

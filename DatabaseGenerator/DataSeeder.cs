@@ -1,6 +1,6 @@
 namespace IAMBuddy.DatabaseGenerator;
 using Bogus;
-using IAMBuddy.Tools.Data;
+using IAMBuddy.Infrastructure;
 
 public class DataSeeder
 {

@@ -1,6 +1,6 @@
 namespace IAMBuddy.Tools;
 
-using IAMBuddy.Tools.Data;
+using IAMBuddy.Infrastructure;
 using IAMBuddy.Tools.OpenApi;
 using Microsoft.Extensions.Hosting;
 

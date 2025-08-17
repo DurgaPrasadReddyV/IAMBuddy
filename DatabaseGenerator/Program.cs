@@ -1,7 +1,7 @@
 namespace IAMBuddy.Tools.DatabaseGenerator;
 using System;
 using IAMBuddy.DatabaseGenerator;
-using IAMBuddy.Tools.Data;
+using IAMBuddy.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
