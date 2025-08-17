@@ -11,5 +11,10 @@ public class ApprovalRequestConfiguration : IEntityTypeConfiguration<ApprovalReq
         builder.ToTable("ApprovalRequests");
 
         builder.Property(x => x.CreatedAt).IsRequired();
+
+        builder.HasOne(approval => approval.ApprovedBy)
+            .WithMany(human => human.ApprovalRequests)
+            .HasForeignKey(approval => approval.ApprovedById)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

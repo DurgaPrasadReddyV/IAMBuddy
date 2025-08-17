@@ -11,6 +11,7 @@ public class BusinessAppEnvironment : IAuditableEntity, IHasBusinessApplication
     public string? Description { get; set; }
     public bool IsActive { get; set; }
     public string? Url { get; set; }
+    public virtual ICollection<BusinessAppResourceIdentity> BusinessAppResourceIdentities { get; set; } = [];
 
     // IHasBusinessApplication
     public int BusinessApplicationId { get; set; }
@@ -19,15 +20,13 @@ public class BusinessAppEnvironment : IAuditableEntity, IHasBusinessApplication
     // IAuditableEntity
     public int Id { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-    public string? CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = string.Empty;
     public DateTimeOffset? UpdatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public bool IsDeleted { get; set; }
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-
-
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public enum EBusinessAppEnvironment

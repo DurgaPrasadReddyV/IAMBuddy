@@ -1,6 +1,7 @@
 namespace IAMBuddy.Domain.Common;
 
 using System.ComponentModel.DataAnnotations;
+using IAMBuddy.Domain.BusinessApp;
 
 public class HumanIdentity : IAuditableEntity, IHasAuthoritativeSource
 {
@@ -24,6 +25,9 @@ public class HumanIdentity : IAuditableEntity, IHasAuthoritativeSource
     public string? Description { get; set; }
     public int? ManagerId { get; set; }
     public virtual HumanIdentity? Manager { get; set; }
+    public virtual ICollection<HumanIdentity> DirectReports { get; set; } = [];
+    public virtual ICollection<ApprovalRequest> ApprovalRequests { get; set; } = [];
+    public virtual ICollection<BusinessAppUser> BusinessAppUsers { get; set; } = [];
 
     // IHasAuthoritativeSource
     public int AuthoritativeSourceId { get; set; }
@@ -32,7 +36,7 @@ public class HumanIdentity : IAuditableEntity, IHasAuthoritativeSource
     // IAuditableEntity
     public int Id { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-    public string? CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = string.Empty;
     public DateTimeOffset? UpdatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public bool IsDeleted { get; set; }

@@ -22,6 +22,9 @@ public class BusinessApplication : IResource, IHasPrimaryOwner, IHasSecondaryOwn
     public virtual BusinessAppUser TechnicalContact { get; set; } = null!;
     public int? BusinessContactId { get; set; }
     public virtual BusinessAppUser BusinessContact { get; set; } = null!;
+    public virtual ICollection<BusinessAppEnvironment> BusinessAppEnvironments { get; set; } = [];
+    public virtual ICollection<BusinessAppResourceIdentity> BusinessAppResourceIdentities { get; set; } = [];
+
 
     // IHasPrimaryOwner
     public int PrimaryOwnerId { get; set; }
@@ -40,15 +43,13 @@ public class BusinessApplication : IResource, IHasPrimaryOwner, IHasSecondaryOwn
     public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
     public int Id { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-    public string? CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = string.Empty;
     public DateTimeOffset? UpdatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public bool IsDeleted { get; set; }
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-
-
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public enum EBusinessAppCriticality

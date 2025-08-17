@@ -11,5 +11,10 @@ public class BusinessAppEnvironmentConfiguration : IEntityTypeConfiguration<Busi
         builder.ToTable("BusinessAppEnvironments");
 
         builder.Property(x => x.CreatedAt).IsRequired();
+
+        builder.HasOne(businessAppEnv => businessAppEnv.BusinessApplication)
+            .WithMany(businessApp => businessApp.BusinessAppEnvironments)
+            .HasForeignKey(businessAppEnv => businessAppEnv.BusinessApplicationId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
