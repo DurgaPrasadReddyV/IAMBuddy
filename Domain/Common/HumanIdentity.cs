@@ -39,8 +39,6 @@ public class HumanIdentity : IAuditableEntity, IHasAuthoritativeSource
     public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
     [Timestamp] public byte[]? RowVersion { get; set; }
-
-
     public Dictionary<string, string> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public enum EHumanIdentityStatus

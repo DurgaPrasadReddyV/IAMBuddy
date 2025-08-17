@@ -8,8 +8,7 @@ public class AddBusinessAppHumanActiveDirectoryGroupMembershipConfiguration : IE
     public void Configure(EntityTypeBuilder<AddBusinessAppHumanActiveDirectoryGroupMembership> builder)
     {
         builder.ToTable("AddBusinessAppHumanActiveDirectoryGroupMemberships");
+
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.IsDeleted).IsRequired();
-        builder.Property(x => x.RowVersion).IsRowVersion();
     }
 }

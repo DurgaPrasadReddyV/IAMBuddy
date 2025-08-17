@@ -10,11 +10,6 @@ public class AdminAuditLogConfiguration : IEntityTypeConfiguration<AdminAuditLog
     {
         builder.ToTable("AdminAuditLogs");
 
-        builder.Property(x => x.EntityType)
-            .IsRequired()
-            .HasMaxLength(256);
-
-        builder.Property(x => x.EntityId)
-            .IsRequired();
+        builder.Property(x => x.ActionDate).IsRequired();
     }
 }

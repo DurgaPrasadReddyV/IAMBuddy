@@ -4,11 +4,11 @@ using IAMBuddy.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class HumanIdentityConfiguration : IEntityTypeConfiguration<HumanIdentity>
+public class ApprovalRequestConfiguration : IEntityTypeConfiguration<ApprovalRequest>
 {
-    public void Configure(EntityTypeBuilder<HumanIdentity> builder)
+    public void Configure(EntityTypeBuilder<ApprovalRequest> builder)
     {
-        builder.ToTable("HumanIdentities");
+        builder.ToTable("ApprovalRequests");
 
         builder.Property(x => x.CreatedAt).IsRequired();
     }

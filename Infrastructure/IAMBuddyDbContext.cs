@@ -20,6 +20,7 @@ public class IAMBuddyDbContext(DbContextOptions<IAMBuddyDbContext> options) : Db
 {
     // Common entities
     public DbSet<AdminAuditLog> AdminAuditLogs { get; set; } = null!;
+    public DbSet<ApprovalRequest> ApprovalRequests { get; set; } = null!;
     public DbSet<AuthoritativeSource> AuthoritativeSources { get; set; } = null!;
     public DbSet<HumanIdentity> HumanIdentities { get; set; } = null!;
 

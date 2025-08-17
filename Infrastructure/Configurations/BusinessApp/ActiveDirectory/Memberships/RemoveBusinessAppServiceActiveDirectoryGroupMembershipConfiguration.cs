@@ -8,8 +8,7 @@ public class RemoveBusinessAppServiceActiveDirectoryGroupMembershipConfiguration
     public void Configure(EntityTypeBuilder<RemoveBusinessAppServiceActiveDirectoryGroupMembership> builder)
     {
         builder.ToTable("RemoveBusinessAppServiceActiveDirectoryGroupMemberships");
+
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.IsDeleted).IsRequired();
-        builder.Property(x => x.RowVersion).IsRowVersion();
     }
 }

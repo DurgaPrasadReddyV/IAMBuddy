@@ -8,16 +8,7 @@ public class BusinessAppServiceActiveDirectoryGroupMembershipConfiguration : IEn
     public void Configure(EntityTypeBuilder<BusinessAppServiceActiveDirectoryGroupMembership> builder)
     {
         builder.ToTable("BusinessAppServiceActiveDirectoryGroupMemberships");
-        builder.HasOne(x => x.Group)
-            .WithMany()
-            .HasForeignKey("GroupId")
-            .OnDelete(DeleteBehavior.Restrict);
-        builder.HasOne(x => x.BusinessAppServiceActiveDirectoryAccount)
-            .WithMany()
-            .HasForeignKey("BusinessAppServiceActiveDirectoryAccountId")
-            .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.IsDeleted).IsRequired();
-        builder.Property(x => x.RowVersion).IsRowVersion();
     }
 }

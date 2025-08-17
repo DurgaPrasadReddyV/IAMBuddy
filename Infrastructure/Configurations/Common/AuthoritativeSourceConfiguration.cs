@@ -10,17 +10,6 @@ public class AuthoritativeSourceConfiguration : IEntityTypeConfiguration<Authori
     {
         builder.ToTable("AuthoritativeSources");
 
-        builder.Property(x => x.SourceName)
-            .HasMaxLength(128);
-
-        builder.Property(x => x.SourceType)
-            .HasMaxLength(64);
-
-        builder.Property(x => x.Description)
-            .HasMaxLength(512);
-
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.IsDeleted).IsRequired();
-        builder.Property(x => x.RowVersion).IsRowVersion();
     }
 }

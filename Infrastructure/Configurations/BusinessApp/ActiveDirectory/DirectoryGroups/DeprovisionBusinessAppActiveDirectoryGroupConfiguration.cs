@@ -4,11 +4,11 @@ using IAMBuddy.Domain.BusinessApp.ActiveDirectory.DirectoryGroups;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class BusinessAppActiveDirectoryGroupConfiguration : IEntityTypeConfiguration<BusinessAppActiveDirectoryGroup>
+public class DeprovisionBusinessAppActiveDirectoryGroupConfiguration : IEntityTypeConfiguration<DeprovisionBusinessAppActiveDirectoryGroup>
 {
-    public void Configure(EntityTypeBuilder<BusinessAppActiveDirectoryGroup> builder)
+    public void Configure(EntityTypeBuilder<DeprovisionBusinessAppActiveDirectoryGroup> builder)
     {
-        builder.ToTable("BusinessAppActiveDirectoryGroups");
+        builder.ToTable("DeprovisionBusinessAppActiveDirectoryGroups");
 
         builder.Property(x => x.CreatedAt).IsRequired();
     }

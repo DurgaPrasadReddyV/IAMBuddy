@@ -8,8 +8,7 @@ public class RemoveBusinessAppHumanActiveDirectoryGroupMembershipConfiguration :
     public void Configure(EntityTypeBuilder<RemoveBusinessAppHumanActiveDirectoryGroupMembership> builder)
     {
         builder.ToTable("RemoveBusinessAppHumanActiveDirectoryGroupMemberships");
+
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.IsDeleted).IsRequired();
-        builder.Property(x => x.RowVersion).IsRowVersion();
     }
 }

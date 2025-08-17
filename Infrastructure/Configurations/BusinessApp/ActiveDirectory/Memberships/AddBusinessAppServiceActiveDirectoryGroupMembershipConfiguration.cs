@@ -8,8 +8,7 @@ public class AddBusinessAppServiceActiveDirectoryGroupMembershipConfiguration : 
     public void Configure(EntityTypeBuilder<AddBusinessAppServiceActiveDirectoryGroupMembership> builder)
     {
         builder.ToTable("AddBusinessAppServiceActiveDirectoryGroupMemberships");
+
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.IsDeleted).IsRequired();
-        builder.Property(x => x.RowVersion).IsRowVersion();
     }
 }
