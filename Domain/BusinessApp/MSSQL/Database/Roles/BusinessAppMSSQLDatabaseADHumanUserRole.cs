@@ -36,9 +36,6 @@ public class BusinessAppMSSQLDatabaseADHumanUserRole : IBusinessAppUserOwnedReso
     public int AuthoritativeSourceId { get; set; }
     public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
 
-    public int BusinessApplicationId { get; set; }
-    public virtual BusinessApplication BusinessApplication { get; set; } = null!;
-
     public int BusinessAppUserId { get; set; }
     public virtual BusinessAppUser BusinessAppUser { get; set; } = null!;
 }

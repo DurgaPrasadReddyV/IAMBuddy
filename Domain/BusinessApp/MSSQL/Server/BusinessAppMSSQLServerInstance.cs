@@ -40,9 +40,6 @@ public class BusinessAppMSSQLServerInstance : IBusinessAppOwnedResource
     public int AuthoritativeSourceId { get; set; }
     public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
 
-    public int BusinessApplicationId { get; set; }
-    public virtual BusinessApplication BusinessApplication { get; set; } = null!;
-
     public int BusinessAppResourceIdentityId { get; set; }
     public virtual BusinessAppResourceIdentity BusinessAppResourceIdentity { get; set; } = null!;
 }

@@ -1,6 +1,7 @@
 namespace IAMBuddy.Domain.BusinessApp;
 
 using System.ComponentModel.DataAnnotations;
+using IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 using IAMBuddy.Domain.Common;
 
 public class BusinessAppResourceIdentity : IAuditableEntity, IHasBusinessApplication,
@@ -16,6 +17,7 @@ public class BusinessAppResourceIdentity : IAuditableEntity, IHasBusinessApplica
     public DateTimeOffset? LastAccessDate { get; set; }
     public string? AccessFrequency { get; set; }
     public string? Description { get; set; }
+    public virtual ICollection<BusinessAppActiveDirectoryDirectoryForest> BusinessAppActiveDirectoryDirectoryForests { get; set; } = [];
 
     // IHasBusinessApplication
     public int BusinessApplicationId { get; set; }

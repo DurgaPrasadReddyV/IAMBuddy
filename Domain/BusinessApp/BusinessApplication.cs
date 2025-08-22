@@ -22,6 +22,7 @@ public class BusinessApplication : IResource, IHasPrimaryOwner, IHasSecondaryOwn
     public virtual BusinessAppUser TechnicalContact { get; set; } = null!;
     public int? BusinessContactId { get; set; }
     public virtual BusinessAppUser BusinessContact { get; set; } = null!;
+    public virtual ICollection<BusinessAppUser> BusinessAppUsers { get; set; } = [];
     public virtual ICollection<BusinessAppEnvironment> BusinessAppEnvironments { get; set; } = [];
     public virtual ICollection<BusinessAppResourceIdentity> BusinessAppResourceIdentities { get; set; } = [];
 

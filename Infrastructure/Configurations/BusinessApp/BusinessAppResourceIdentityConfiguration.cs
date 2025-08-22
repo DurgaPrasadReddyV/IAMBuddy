@@ -8,7 +8,10 @@ public class BusinessAppResourceIdentityConfiguration : IEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<BusinessAppResourceIdentity> builder)
     {
-        builder.ToTable("BusinessAppResourceIdentities");
+        builder.ToTable("BusinessAppResourceIdentities", t => t.HasCheckConstraint(
+                "ck_business_resource_identity_primary_secondary_distinct",
+                @"(""SecondaryOwnerId"" IS NULL) 
+                  OR (""SecondaryOwnerId"" <> ""PrimaryOwnerId"")"));
 
         builder.Property(x => x.CreatedAt).IsRequired();
 
@@ -17,19 +20,22 @@ public class BusinessAppResourceIdentityConfiguration : IEntityTypeConfiguration
             .HasForeignKey(businessAppResourceIdentity => businessAppResourceIdentity.BusinessApplicationId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(businessAppResourceIdentity => businessAppResourceIdentity.BusinessApplication)
+        builder.HasOne(businessAppResourceIdentity => businessAppResourceIdentity.BusinessAppEnvironment)
             .WithMany(businessAppEnv => businessAppEnv.BusinessAppResourceIdentities)
-            .HasForeignKey(businessAppResourceIdentity => businessAppResourceIdentity.BusinessApplicationId)
+            .HasForeignKey(businessAppResourceIdentity => new { businessAppResourceIdentity.BusinessApplicationId, businessAppResourceIdentity.BusinessAppEnvironmentId })
+            .HasPrincipalKey(e => new { e.BusinessApplicationId, e.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(businessAppResourceIdentity => businessAppResourceIdentity.PrimaryOwner)
             .WithMany(businessAppUser => businessAppUser.BusinessAppResourceIdentitiesPrimaryOwner)
-            .HasForeignKey(businessAppResourceIdentity => businessAppResourceIdentity.PrimaryOwnerId)
+            .HasForeignKey(businessAppResourceIdentity => new { businessAppResourceIdentity.BusinessApplicationId, businessAppResourceIdentity.PrimaryOwnerId })
+            .HasPrincipalKey(u => new { u.BusinessApplicationId, u.HumanIdentityId })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(businessAppResourceIdentity => businessAppResourceIdentity.SecondaryOwner)
             .WithMany(businessAppUser => businessAppUser.BusinessAppResourceIdentitiesSecondaryOwner)
-            .HasForeignKey(businessAppResourceIdentity => businessAppResourceIdentity.SecondaryOwnerId)
+            .HasForeignKey(businessAppResourceIdentity => new { businessAppResourceIdentity.BusinessApplicationId, businessAppResourceIdentity.SecondaryOwnerId })
+            .HasPrincipalKey(u => new { u.BusinessApplicationId, u.HumanIdentityId })
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

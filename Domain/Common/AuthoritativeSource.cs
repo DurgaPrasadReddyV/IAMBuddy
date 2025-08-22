@@ -2,6 +2,7 @@ namespace IAMBuddy.Domain.Common;
 using System;
 using System.ComponentModel.DataAnnotations;
 using IAMBuddy.Domain.BusinessApp;
+using IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 
 public class AuthoritativeSource : IAuditableEntity
 {
@@ -11,6 +12,7 @@ public class AuthoritativeSource : IAuditableEntity
     public DateTimeOffset? LastSynchronizationTimestamp { get; set; }
     public virtual ICollection<HumanIdentity> HumanIdentities { get; set; } = [];
     public virtual ICollection<BusinessApplication> BusinessApplications { get; set; } = [];
+    public virtual ICollection<BusinessAppActiveDirectoryDirectoryForest> BusinessAppActiveDirectoryDirectoryForests { get; set; } = [];
 
     // IAuditableEntity
     public int Id { get; set; }

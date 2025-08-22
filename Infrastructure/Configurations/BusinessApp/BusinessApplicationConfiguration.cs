@@ -8,28 +8,35 @@ public class BusinessApplicationConfiguration : IEntityTypeConfiguration<Busines
 {
     public void Configure(EntityTypeBuilder<BusinessApplication> builder)
     {
-        builder.ToTable("BusinessApplications");
+        builder.ToTable("BusinessApplications", t => t.HasCheckConstraint(
+                "ck_business_application_primary_secondary_distinct",
+                @"(""SecondaryOwnerId"" IS NULL) 
+                  OR (""SecondaryOwnerId"" <> ""PrimaryOwnerId"")"));
 
         builder.Property(x => x.CreatedAt).IsRequired();
 
         builder.HasOne(businessApp => businessApp.BusinessContact)
-            .WithOne()
-            .HasForeignKey<BusinessApplication>(businessApp => businessApp.BusinessContactId)
+            .WithOne(businessAppUser => businessAppUser.BusinessAppBusinessContact)
+            .HasForeignKey<BusinessApplication>(businessApp => new { businessApp.Id, businessApp.BusinessContactId })
+            .HasPrincipalKey((BusinessAppUser u) => new { u.BusinessApplicationId, u.HumanIdentityId })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(businessApp => businessApp.TechnicalContact)
-            .WithOne()
-            .HasForeignKey<BusinessApplication>(businessApp => businessApp.TechnicalContactId)
+            .WithOne(businessAppUser => businessAppUser.BusinessAppTechnicalContact)
+            .HasForeignKey<BusinessApplication>(businessApp => new { businessApp.Id, businessApp.TechnicalContactId })
+            .HasPrincipalKey((BusinessAppUser u) => new { u.BusinessApplicationId, u.HumanIdentityId })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(businessApp => businessApp.PrimaryOwner)
-            .WithOne()
-            .HasForeignKey<BusinessApplication>(businessApp => businessApp.PrimaryOwnerId)
+            .WithOne(businessAppUser => businessAppUser.BusinessAppPrimaryOwner)
+            .HasForeignKey<BusinessApplication>(businessApp => new { businessApp.Id, businessApp.PrimaryOwnerId })
+            .HasPrincipalKey((BusinessAppUser u) => new { u.BusinessApplicationId, u.HumanIdentityId })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(businessApp => businessApp.SecondaryOwner)
-            .WithOne()
-            .HasForeignKey<BusinessApplication>(businessApp => businessApp.SecondaryOwnerId)
+            .WithOne(businessAppUser => businessAppUser.BusinessAppSecondaryOwner)
+            .HasForeignKey<BusinessApplication>(businessApp => new { businessApp.Id, businessApp.SecondaryOwnerId })
+            .HasPrincipalKey((BusinessAppUser u) => new { u.BusinessApplicationId, u.HumanIdentityId })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(businessApp => businessApp.AuthoritativeSource)

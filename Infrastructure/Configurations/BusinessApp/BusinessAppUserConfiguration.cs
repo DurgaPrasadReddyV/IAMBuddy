@@ -9,6 +9,7 @@ public class BusinessAppUserConfiguration : IEntityTypeConfiguration<BusinessApp
     public void Configure(EntityTypeBuilder<BusinessAppUser> builder)
     {
         builder.ToTable("BusinessAppUsers");
+        builder.HasKey(x => new { x.BusinessApplicationId, x.HumanIdentityId });
 
         builder.Property(x => x.CreatedAt).IsRequired();
 
@@ -18,23 +19,8 @@ public class BusinessAppUserConfiguration : IEntityTypeConfiguration<BusinessApp
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(businessAppUser => businessAppUser.BusinessApplication)
-            .WithOne()
-            .HasForeignKey<BusinessAppUser>(businessAppUser => businessAppUser.BusinessApplicationId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(businessAppUser => businessAppUser.BusinessApplication)
-            .WithOne()
-            .HasForeignKey<BusinessAppUser>(businessAppUser => businessAppUser.BusinessApplicationId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(businessAppUser => businessAppUser.BusinessApplication)
-            .WithOne()
-            .HasForeignKey<BusinessAppUser>(businessAppUser => businessAppUser.BusinessApplicationId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(businessAppUser => businessAppUser.BusinessApplication)
-            .WithOne()
-            .HasForeignKey<BusinessAppUser>(businessAppUser => businessAppUser.BusinessApplicationId)
+            .WithMany(businessApp => businessApp.BusinessAppUsers)
+            .HasForeignKey(businessAppUser => businessAppUser.BusinessApplicationId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
