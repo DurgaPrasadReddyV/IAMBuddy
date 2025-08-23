@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IAMBuddy.Domain</AssemblyName>
+    <RootNamespace>IAMBuddy.Domain</RootNamespace>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BusinessApp\MSSQL\**" />
+    <EmbeddedResource Remove="BusinessApp\MSSQL\**" />
+    <None Remove="BusinessApp\MSSQL\**" />
+  </ItemGroup>
+
+</Project>
