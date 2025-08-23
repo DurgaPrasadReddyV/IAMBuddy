@@ -4,6 +4,7 @@ using IAMBuddy.Domain.Common;
 
 internal interface IBusinessAppUserOwnedResource : IResource
 {
-    public int BusinessAppUserId { get; set; }
+    public int BusinessApplicationId { get; set; }
+    public int HumanIdentityId { get; set; }
     public BusinessAppUser BusinessAppUser { get; set; }
 }

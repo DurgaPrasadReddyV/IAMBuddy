@@ -11,5 +11,15 @@ public class BusinessAppActiveDirectoryGroupConfiguration : IEntityTypeConfigura
         builder.ToTable("BusinessAppActiveDirectoryGroups");
 
         builder.Property(x => x.CreatedAt).IsRequired();
+
+        builder.HasOne(businessAppADGroup => businessAppADGroup.AuthoritativeSource)
+            .WithMany(source => source.BusinessAppActiveDirectoryGroups)
+            .HasForeignKey(businessAppADGroup => businessAppADGroup.AuthoritativeSourceId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(businessAppADGroup => businessAppADGroup.BusinessAppResourceIdentity)
+            .WithMany(source => source.BusinessAppActiveDirectoryGroups)
+            .HasForeignKey(businessAppADGroup => businessAppADGroup.BusinessAppResourceIdentityId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

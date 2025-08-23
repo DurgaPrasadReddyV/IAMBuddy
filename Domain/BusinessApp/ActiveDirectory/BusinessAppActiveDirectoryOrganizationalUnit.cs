@@ -8,6 +8,7 @@ public class BusinessAppActiveDirectoryOrganizationalUnit : IBusinessAppOwnedRes
 {
     [Required] public string DistinguishedName { get; set; } = null!;
     public int? ParentOuId { get; set; }
+    public BusinessAppActiveDirectoryOrganizationalUnit? ParentOu { get; set; }
     public List<BusinessAppActiveDirectoryOrganizationalUnit> Children { get; set; } = [];
     public int DomainId { get; set; }
     public virtual BusinessAppActiveDirectoryDirectoryDomain Domain { get; set; } = null!;

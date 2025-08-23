@@ -42,7 +42,8 @@ public class BusinessAppHumanActiveDirectoryGroupMembership : IBusinessAppUserOw
     public int AuthoritativeSourceId { get; set; }
     public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;
 
-    public int BusinessAppUserId { get; set; }
+    public int BusinessApplicationId { get; set; }
+    public int HumanIdentityId { get; set; }
     public virtual BusinessAppUser BusinessAppUser { get; set; } = null!;
 
     public int DomainId { get; set; }

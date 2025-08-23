@@ -23,6 +23,7 @@ public class BusinessAppActiveDirectoryDirectoryForest : IBusinessAppOwnedResour
     public string? Description { get; set; }
     public bool IsActive { get; set; }
     public IResource.EResourceType ResourceType { get; set; }
+    public virtual ICollection<BusinessAppActiveDirectoryDirectoryDomain> BusinessAppActiveDirectoryDirectoryDomains { get; set; } = [];
 
     public int AuthoritativeSourceId { get; set; }
     public virtual AuthoritativeSource AuthoritativeSource { get; set; } = null!;

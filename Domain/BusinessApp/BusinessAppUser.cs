@@ -1,6 +1,9 @@
 namespace IAMBuddy.Domain.BusinessApp;
 
 using System.ComponentModel.DataAnnotations;
+using IAMBuddy.Domain.BusinessApp.ActiveDirectory.Accounts;
+using IAMBuddy.Domain.BusinessApp.ActiveDirectory.DirectoryGroups;
+using IAMBuddy.Domain.BusinessApp.ActiveDirectory.Memberships;
 using IAMBuddy.Domain.Common;
 
 public class BusinessAppUser : IAuditableEntity, IHasHumanIdentity, IHasBusinessApplication
@@ -14,6 +17,8 @@ public class BusinessAppUser : IAuditableEntity, IHasHumanIdentity, IHasBusiness
     public virtual BusinessApplication? BusinessAppTechnicalContact { get; set; }
     public virtual ICollection<BusinessAppResourceIdentity> BusinessAppResourceIdentitiesPrimaryOwner { get; set; } = [];
     public virtual ICollection<BusinessAppResourceIdentity> BusinessAppResourceIdentitiesSecondaryOwner { get; set; } = [];
+    public virtual ICollection<BusinessAppHumanActiveDirectoryAccount> BusinessAppHumanActiveDirectoryAccounts { get; set; } = [];
+    public virtual ICollection<BusinessAppHumanActiveDirectoryGroupMembership> BusinessAppHumanActiveDirectoryGroupMemberships { get; set; } = [];
 
     // IHasBusinessApplication
     public int BusinessApplicationId { get; set; }

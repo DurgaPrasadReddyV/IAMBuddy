@@ -11,5 +11,15 @@ public class BusinessAppHumanActiveDirectoryAccountConfiguration : IEntityTypeCo
         builder.ToTable("BusinessAppHumanActiveDirectoryAccounts");
 
         builder.Property(x => x.CreatedAt).IsRequired();
+
+        builder.HasOne(businessAppADHumanAcc => businessAppADHumanAcc.AuthoritativeSource)
+            .WithMany(source => source.BusinessAppHumanActiveDirectoryAccounts)
+            .HasForeignKey(businessAppADHumanAcc => businessAppADHumanAcc.AuthoritativeSourceId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(businessAppADHumanAcc => businessAppADHumanAcc.BusinessAppUser)
+            .WithMany(source => source.BusinessAppHumanActiveDirectoryAccounts)
+            .HasForeignKey(businessAppADHumanAcc => new { businessAppADHumanAcc.BusinessApplicationId, businessAppADHumanAcc.HumanIdentityId })
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

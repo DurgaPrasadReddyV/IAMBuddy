@@ -12,6 +12,7 @@ public class BusinessAppActiveDirectoryDirectoryDomain : IBusinessAppOwnedResour
     public string? DistinguishedName { get; set; }
     public int ForestId { get; set; }
     public virtual BusinessAppActiveDirectoryDirectoryForest Forest { get; set; } = null!;
+    public virtual ICollection<BusinessAppActiveDirectoryOrganizationalUnit> BusinessAppActiveDirectoryOrganizationalUnits { get; set; } = [];
 
     // IBusinessAppOwnedResource
     public int Id { get; set; }
