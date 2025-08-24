@@ -16,6 +16,9 @@
 	<ItemGroup>
 		<PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
 		<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+		<PackageReference Include="Aspire.Hosting.Python" Version="9.4.1" />
+		<PackageReference Include="Aspire.Hosting.Qdrant" Version="9.4.1" />
+		<PackageReference Include="NorthernNerds.Aspire.Hosting.Neo4j" Version="2.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -23,5 +26,9 @@
 	  <ProjectReference Include="..\DatabaseGenerator\DatabaseGenerator.csproj" />
 	  <ProjectReference Include="..\Tools\Tools.csproj" />
 	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(SolutionDir)setup-cognee-python-env.ps1&quot;" />
+	</Target>
 
 </Project>
