@@ -23,8 +23,6 @@ var databaseGenerator = builder.AddProject<Projects.DatabaseGenerator>("database
 
 #pragma warning disable ASPIREHOSTINGPYTHON001
 var cognee = builder.AddPythonApp("cognee", "../Cognee", "Cognee.py")
-       .WithHttpEndpoint(env: "PORT")
-       .WithExternalHttpEndpoints()
        .WithOtlpExporter();
 #pragma warning restore ASPIREHOSTINGPYTHON001
 

@@ -1,5 +1,6 @@
 namespace IAMBuddy.Infrastructure;
 using System.Reflection;
+using IAMBuddy.Application;
 using IAMBuddy.Domain.BusinessApp;
 using IAMBuddy.Domain.BusinessApp.ActiveDirectory;
 using IAMBuddy.Domain.BusinessApp.ActiveDirectory.Accounts;
@@ -16,7 +17,8 @@ using IAMBuddy.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-public class IAMBuddyDbContext(DbContextOptions<IAMBuddyDbContext> options) : DbContext(options)
+public class IAMBuddyDbContext(DbContextOptions<IAMBuddyDbContext> options)
+    : DbContext(options), IIAMBuddyDbContext
 {
     // Common entities
     public DbSet<AdminAuditLog> AdminAuditLogs { get; set; } = null!;

@@ -11,8 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>Cognee</Name>
     <RootNamespace>Cognee</RootNamespace>
-    <InterpreterId>
-    </InterpreterId>
+    <InterpreterId>MSBuild|.venv|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,11 +27,19 @@
   <ItemGroup>
     <Content Include="requirements.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include=".venv\">
+      <Id>.venv</Id>
+      <Version>3.12</Version>
+      <Description>.venv (Python 3.12 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
-  <!-- Uncomment the CoreCompile target to enable the Build command in
-       Visual Studio and specify your pre- and post-build commands in
-       the BeforeBuild and AfterBuild targets below. -->
-  <!--<Target Name="CoreCompile" />-->
+  <Target Name="CoreCompile" />
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
