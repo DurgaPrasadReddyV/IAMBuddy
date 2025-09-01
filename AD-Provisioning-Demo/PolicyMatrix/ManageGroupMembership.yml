@@ -1,0 +1,13 @@
+policyRules:
+  - requestType: UserAccountRequest
+    steps:
+      - role: Manager
+        selector: ManagerOf(UserAccount)
+      - role: PlatformOwner
+        selector: PlatformOwner()
+  - requestType: ServiceAccountRequest
+    steps:
+      - role: ResourceOwner
+        selector: ResourceOwnerOf(ServiceAccount)
+      - role: PlatformOwner
+        selector: PlatformOwner()

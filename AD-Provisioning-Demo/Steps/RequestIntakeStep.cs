@@ -144,23 +144,17 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         // Creating another kernel that only makes use private functions to fill up the form
         Kernel kernel = new(_baseKernel.Services);
         kernel.ImportPluginFromFunctions("FillServiceAccountRequestForm", [
-            KernelFunctionFactory.CreateFromMethod(SetServiceAccountName, functionName: nameof(SetServiceAccountName)),
         KernelFunctionFactory.CreateFromMethod(SetServiceAppName, functionName: nameof(SetServiceAppName)),
+        KernelFunctionFactory.CreateFromMethod(SetServiceAccountName, functionName: nameof(SetServiceAccountName)),
         KernelFunctionFactory.CreateFromMethod(SetDomainName, functionName: nameof(SetDomainName)),
         KernelFunctionFactory.CreateFromMethod(SetResourceIdentityName, functionName: nameof(SetResourceIdentityName)),
         KernelFunctionFactory.CreateFromMethod(SetPasswordNeverExpires, functionName: nameof(SetPasswordNeverExpires)),
-        KernelFunctionFactory.CreateFromMethod(SetPasswordToBeVaulted, functionName: nameof(SetPasswordToBeVaulted))]);
+        KernelFunctionFactory.CreateFromMethod(SetPasswordToBeVaulted, functionName: nameof(SetPasswordToBeVaulted)),
+        KernelFunctionFactory.CreateFromMethod(SetDescription, functionName: nameof(SetDescription)),
+        KernelFunctionFactory.CreateFromMethod(SetJustification, functionName: nameof(SetJustification))
+        ]);
 
         return kernel;
-    }
-
-    [Description("User provided details of account name")]
-    private void SetServiceAccountName(string accountName)
-    {
-        if (!string.IsNullOrEmpty(accountName) && _state != null)
-        {
-            _state.ServiceAccountRequest.AccountName = accountName;
-        }
     }
 
     [Description("User provided details of PasswordNeverExpires")]
@@ -201,6 +195,28 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         return "AppName is invalid";
     }
 
+    [Description("User provided details of account name")]
+    private string SetServiceAccountName(string accountName)
+    {
+        if (!string.IsNullOrEmpty(accountName) && _state != null)
+        {
+            _state.ServiceAccountRequest.AccountName = accountName;
+             return $"accountName set to {accountName}";
+            //string[] data = accountName.Split('-');
+            //if (data.Length > 0 && data[0] == _state.ServiceAccountRequest.AppName)
+            //{
+            //    _state.ServiceAccountRequest.AccountName = accountName;
+            //    return $"accountName set to {accountName}";
+            //}
+            //else
+            //{
+            //    _state.ServiceAccountRequest.AccountName = "";
+            //    return $"accountName '{accountName}' is not valid. it must start with app name";
+            //}
+        }
+        return "AccountName is invalid";
+    }
+
     [Description("User provided details of domain name")]
     private string SetDomainName(string domainName)
     {
@@ -239,6 +255,24 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             }
         }
         return "ResourceIdentityName is invalid";
+    }
+
+    [Description("User provided details of justification")]
+    private void SetJustification(string justification)
+    {
+        if (!string.IsNullOrEmpty(justification) && _state != null)
+        {
+            _state.ServiceAccountRequest.Justification = justification;
+        }
+    }
+
+    [Description("User provided details of resource description")]
+    private void SetDescription(string description)
+    {
+        if (!string.IsNullOrEmpty(description) && _state != null)
+        {
+            _state.ServiceAccountRequest.Description = description;
+        }
     }
     #endregion
 
@@ -289,9 +323,11 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         KernelFunctionFactory.CreateFromMethod(SetUserAccountName, functionName: nameof(SetUserAccountName)),
         KernelFunctionFactory.CreateFromMethod(SetUserDomainName, functionName: nameof(SetUserDomainName)),
         KernelFunctionFactory.CreateFromMethod(SetUserId, functionName: nameof(SetUserId)),
-         KernelFunctionFactory.CreateFromMethod(SetUserServiceAppName, functionName: nameof(SetUserServiceAppName)),
-          KernelFunctionFactory.CreateFromMethod(SetUserPasswordNeverExpires, functionName: nameof(SetUserPasswordNeverExpires)),
-            KernelFunctionFactory.CreateFromMethod(SetUserPasswordToBeVaulted, functionName: nameof(SetUserPasswordToBeVaulted))
+        KernelFunctionFactory.CreateFromMethod(SetUserServiceAppName, functionName: nameof(SetUserServiceAppName)),
+        KernelFunctionFactory.CreateFromMethod(SetUserPasswordNeverExpires, functionName: nameof(SetUserPasswordNeverExpires)),
+        KernelFunctionFactory.CreateFromMethod(SetUserPasswordToBeVaulted, functionName: nameof(SetUserPasswordToBeVaulted)),
+        KernelFunctionFactory.CreateFromMethod(SetUserDescription, functionName: nameof(SetUserDescription)),
+        KernelFunctionFactory.CreateFromMethod(SetUserJustification, functionName: nameof(SetUserJustification))
         ]);
 
         return kernel;
@@ -382,6 +418,24 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             }
         }
         return "UserId is invalid";
+    }
+
+    [Description("User provided details of justification")]
+    private void SetUserJustification(string justification)
+    {
+        if (!string.IsNullOrEmpty(justification) && _state != null)
+        {
+            _state.ServiceAccountRequest.Justification = justification;
+        }
+    }
+
+    [Description("User provided details of resource description")]
+    private void SetUserDescription(string description)
+    {
+        if (!string.IsNullOrEmpty(description) && _state != null)
+        {
+            _state.ServiceAccountRequest.Description = description;
+        }
     }
 
     private readonly JsonSerializerOptions _jsonOptions = new()

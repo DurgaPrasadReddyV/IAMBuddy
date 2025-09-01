@@ -24,6 +24,12 @@ namespace AD_Provisioning_Demo.Models
         [JsonPropertyName("resourceIdentityName")]
         public string ResourceIdentityName { get; set; } = string.Empty;
 
+        [JsonPropertyName("justification")]
+        public string Justification { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
         [JsonPropertyName("passwordNeverExpires")]
         public string PasswordNeverExpires { get; set; } = "false";
 
@@ -60,7 +66,7 @@ namespace AD_Provisioning_Demo.Models
 
         public bool IsFormCompleted()
         {
-            return !string.IsNullOrEmpty(AccountName) && !string.IsNullOrEmpty(AppName) && !string.IsNullOrEmpty(DomainName) && !string.IsNullOrEmpty(ResourceIdentityName);
+            return !string.IsNullOrEmpty(AccountName) && !string.IsNullOrEmpty(AppName) && !string.IsNullOrEmpty(DomainName) && !string.IsNullOrEmpty(ResourceIdentityName) && !string.IsNullOrEmpty(Justification) && !string.IsNullOrEmpty(Description);
         }
     }
 }
