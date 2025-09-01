@@ -200,17 +200,19 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
     {
         if (!string.IsNullOrEmpty(accountName) && _state != null)
         {
-            string[] data = accountName.Split('-');
-            if (data.Length > 0 && data[0] == _state.ServiceAccountRequest.AppName)
-            {
-                _state.ServiceAccountRequest.AccountName = accountName;
-                return $"accountName set to {accountName}";
-            }
-            else
-            {
-                _state.ServiceAccountRequest.AccountName = "";
-                return $"accountName '{accountName}' is not valid. it must start with app name";
-            }
+            _state.ServiceAccountRequest.AccountName = accountName;
+             return $"accountName set to {accountName}";
+            //string[] data = accountName.Split('-');
+            //if (data.Length > 0 && data[0] == _state.ServiceAccountRequest.AppName)
+            //{
+            //    _state.ServiceAccountRequest.AccountName = accountName;
+            //    return $"accountName set to {accountName}";
+            //}
+            //else
+            //{
+            //    _state.ServiceAccountRequest.AccountName = "";
+            //    return $"accountName '{accountName}' is not valid. it must start with app name";
+            //}
         }
         return "AccountName is invalid";
     }
