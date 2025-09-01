@@ -149,7 +149,10 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         KernelFunctionFactory.CreateFromMethod(SetDomainName, functionName: nameof(SetDomainName)),
         KernelFunctionFactory.CreateFromMethod(SetResourceIdentityName, functionName: nameof(SetResourceIdentityName)),
         KernelFunctionFactory.CreateFromMethod(SetPasswordNeverExpires, functionName: nameof(SetPasswordNeverExpires)),
-        KernelFunctionFactory.CreateFromMethod(SetPasswordToBeVaulted, functionName: nameof(SetPasswordToBeVaulted))]);
+        KernelFunctionFactory.CreateFromMethod(SetPasswordToBeVaulted, functionName: nameof(SetPasswordToBeVaulted)),
+        KernelFunctionFactory.CreateFromMethod(SetDescription, functionName: nameof(SetDescription)),
+        KernelFunctionFactory.CreateFromMethod(SetJustification, functionName: nameof(SetJustification))
+        ]);
 
         return kernel;
     }
@@ -239,6 +242,35 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             }
         }
         return "ResourceIdentityName is invalid";
+    }
+
+    [Description("User provided details of justification")]
+    private void SetJustification(string justification)
+    {
+        if (!string.IsNullOrEmpty(justification) && _state != null)
+        {
+            _state.ServiceAccountRequest.Justification = justification;
+        }
+    }
+
+    [Description("User provided details of resource description")]
+    private string SetDescription(string description)
+    {
+        if (!string.IsNullOrEmpty(description) && _state != null)
+        {
+            string[] data = description.Split('-');
+            if (data.Length > 0 && data[0] == _state.ServiceAccountRequest.AppName)
+            {
+                _state.ServiceAccountRequest.Description = description;
+                return $"description set to {description}";
+            }
+            else
+            {
+                _state.ServiceAccountRequest.Description = "";
+                return $"description '{description}' is not valid. it must start with app name";
+            }
+        }
+        return "description is invalid";
     }
     #endregion
 

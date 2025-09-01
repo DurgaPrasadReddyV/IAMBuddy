@@ -29,6 +29,11 @@ namespace AD_Provisioning_Demo.Models
 
         [JsonPropertyName("passwordToBeVaulted")]
         public string PasswordToBeVaulted { get; set; } = "false";
+        [JsonPropertyName("justification")]
+        public string Justification { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
 
         public UserAccountRequest CopyWithDefaultValues(string defaultStringValue = "Unanswered")
         {
@@ -60,7 +65,7 @@ namespace AD_Provisioning_Demo.Models
 
         public bool IsFormCompleted()
         {
-            return !string.IsNullOrEmpty(AccountName) && !string.IsNullOrEmpty(AppName) && !string.IsNullOrEmpty(DomainName) && !string.IsNullOrEmpty(UserId);
+            return !string.IsNullOrEmpty(AccountName) && !string.IsNullOrEmpty(AppName) && !string.IsNullOrEmpty(DomainName) && !string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(Justification) && !string.IsNullOrEmpty(Description);
         }
     }
 }

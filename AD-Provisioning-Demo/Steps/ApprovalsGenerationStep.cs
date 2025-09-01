@@ -34,7 +34,7 @@ namespace AD_Provisioning_Demo.Steps
         [KernelFunction(ApprovalsGenerationFunctions.GenerateServiceAccountApprovals)]
         public virtual async ValueTask GenerateServiceAccountApprovalsAsync(KernelProcessStepContext context, ServiceAccountRequest request, Kernel _kernel)
         {
-            var rule = PolicyMatrixLoader.Rules.FirstOrDefault(r => r.RequestType.Equals(typeof(UserAccountRequest).Name, StringComparison.OrdinalIgnoreCase));
+            var rule = PolicyMatrixLoader.Rules.FirstOrDefault(r => r.RequestType.Equals(typeof(ServiceAccountRequest).Name, StringComparison.OrdinalIgnoreCase));
             if (rule is null)
                 throw new NotSupportedException($"No policy rule found for RequestType='{typeof(ServiceAccountRequest)}'.");
 
