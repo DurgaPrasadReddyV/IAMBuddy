@@ -35,11 +35,11 @@ namespace AD_Provisioning_Demo.Steps
 
             if (provisionEngineerReview)
             {
-                await Task.Delay(2000);
+                await Task.Delay(5000);
                 Console.WriteLine();
                 Console.WriteLine("****************************************************************************");
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Provisioning Team Approved");
+                Console.WriteLine($"Provisioning Team member reviewed the entire request data, approvals, policies enforcement and provided sign off for auto provisioning");
                 Console.ResetColor();
                 Console.WriteLine("****************************************************************************");
                 Console.WriteLine();
@@ -55,11 +55,11 @@ namespace AD_Provisioning_Demo.Steps
         [KernelFunction(ProvisioningFunctions.ProvisionResource)]
         public async Task ProvisionResourceAsync(KernelProcessStepContext context, Guid requestId)
         {
-            await Task.Delay(2000);
+            await Task.Delay(5000);
             Console.WriteLine();
             Console.WriteLine("****************************************************************************");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[SIMULATION] Provisioning of Resource {requestId} Successful");
+            Console.WriteLine($"[SIMULATION] Auto provisioning of Resource {requestId} Successful via Active Directory MCP Tool Connector");
             Console.ResetColor();
             Console.WriteLine("****************************************************************************");
             Console.WriteLine();

@@ -30,7 +30,7 @@ namespace AD_Provisioning_Demo.Steps
             Console.WriteLine("****************************************************************************");
             foreach (var approval in approvalSpec.RequiredApprovals)
             {
-                Console.WriteLine($"[SIMULATION] Sending approval request to '{approval.Approver}' for Approval ID '{approval.Id}'.");
+                Console.WriteLine($"[SIMULATION] Approval request sent to '{approval.Approver}' for Approval ID '{approval.Id}'.");
                 await Program.ProcessApprovalsAsync(approval);
             }
             Console.WriteLine("****************************************************************************");

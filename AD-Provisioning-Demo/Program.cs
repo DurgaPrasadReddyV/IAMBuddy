@@ -21,7 +21,7 @@ namespace AD_Provisioning_Demo
 
             // Create a google kernel 
             var kernelBuilder = Kernel.CreateBuilder()
-            .AddGoogleAIGeminiChatCompletion(modelId: "gemini-2.5-flash", apiKey: "AIzaSyAse8H8gl6WOecZMXySOi1RX2j7ticrulM");
+            .AddGoogleAIGeminiChatCompletion(modelId: "gemini-2.5-flash", apiKey: "");
             _kernel = kernelBuilder.Build();
 
             ProcessBuilder process = new("ActiveDirectoryProvisioning");

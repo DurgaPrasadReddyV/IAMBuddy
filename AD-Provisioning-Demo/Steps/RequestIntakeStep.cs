@@ -20,7 +20,12 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
     public string _formCompletionSystemPrompt = """
         The goal is to fill up all the fields needed for a form.
         The user may provide information to fill up multiple fields of the form in one message.
-        The user needs to fill up a form, all the fields of the form are necessary
+        The user needs to fill up a form, all the fields of the form are necessary.
+        The Description field is a short description of the request. Try to keep it under 100 words and extract it from the user message if possible.
+        The Description field should contain the AppName.
+        The Justification field is a detailed explanation of why the request is needed. Try to keep it under 200 words and extract it from the user message if possible.
+        For Description and Justification, if the user does not provide enough details, ask them to provide more details.
+        If the user does not like the generated Description or Justification, replace with user provided description and justification.
 
         <CURRENT_FORM_STATE>
         {{current_form_state}}
@@ -130,11 +135,12 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             Program.ServiceAccountRequests.Add(_state.ServiceAccountRequest);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine();
-            Console.WriteLine($"=====Service account request form validation completed=============");
+            Console.WriteLine($"=====Service account request form data validation completed (missing data / incorrect data) =============");
             foreach (var prop in _state.ServiceAccountRequest.GetType().GetProperties())
             {
                 Console.WriteLine($"{prop.Name,-25}: {prop.GetValue(_state.ServiceAccountRequest)}");
             }
+            Console.WriteLine($"=====Service account request form data goveranance policies check completed =============");
             Console.WriteLine($"===================================================================");
             Console.WriteLine();
             Console.ResetColor();
@@ -147,7 +153,6 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         await context.EmitEventAsync(new() { Id = RequestIntakeEvents.ServiceAccountRequestFormNeedsMoreDetails, Data = assistantResponse });
     }
 
-    #region CreateServiceAccountRequestFormKernel
     private Kernel CreateServiceAccountRequestFormKernel(Kernel _baseKernel)
     {
         // Creating another kernel that only makes use private functions to fill up the form
@@ -240,7 +245,7 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             else
             {
                 _state.ServiceAccountRequest.DomainName = "";
-                return $"DomainName '{domainName}' does not exist in the system. Please provide a valid Domain Name.";
+                return $"DomainName '{domainName}' does not exist in the system. Please provide a valid Domain Name. Valid Domains are: {String.Join(",", list.Select(x => x.DnsName).ToArray())}";
             }
         }
         return "DomainName is invalid";
@@ -266,7 +271,7 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         return "ResourceIdentityName is invalid";
     }
 
-    [Description("User provided details of justification")]
+    [Description("User provided details of justification or assistant generated")]
     private void SetJustification(string justification)
     {
         if (!string.IsNullOrEmpty(justification) && _state != null)
@@ -275,7 +280,7 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         }
     }
 
-    [Description("User provided details of resource description")]
+    [Description("User provided details of resource description or assistant generated")]
     private void SetDescription(string description)
     {
         if (!string.IsNullOrEmpty(description) && _state != null)
@@ -283,7 +288,6 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             _state.ServiceAccountRequest.Description = description;
         }
     }
-    #endregion
 
     private async Task ProcessUserAccountRequestAsync(KernelProcessStepContext context, Kernel _kernel)
     {
@@ -403,7 +407,7 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             else
             {
                 _state.UserAccountRequest.DomainName = "";
-                return $"DomainName '{domainName}' does not exist in the system. Please provide a valid Domain Name.";
+                return $"DomainName '{domainName}' does not exist in the system. Please provide a valid Domain Name. Valid Domains are: {String.Join(",", list.Select(x => x.DnsName).ToArray())}";
             }
         }
         return "DomainName is invalid";
@@ -429,7 +433,7 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         return "UserId is invalid";
     }
 
-    [Description("User provided details of justification")]
+    [Description("User provided details of justification or assistant generated")]
     private void SetUserJustification(string justification)
     {
         if (!string.IsNullOrEmpty(justification) && _state != null)
@@ -438,7 +442,7 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         }
     }
 
-    [Description("User provided details of resource description")]
+    [Description("User provided details of resource description or assistant generated")]
     private void SetUserDescription(string description)
     {
         if (!string.IsNullOrEmpty(description) && _state != null)

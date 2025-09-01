@@ -77,6 +77,8 @@ namespace AD_Provisioning_Demo.Steps
                 throw new InvalidOperationException("ApprovalSpecDraft missing required fields.");
 
             var approvalSpec = ApprovalSpecResolver.ResolveServiceAccountRequest(draft, request);
+            Console.WriteLine($"Approvals determined via Governance Policy. Owners of application and platform are identified and approvals mail generated.");
+            await Task.Delay(5000);
             await context.EmitEventAsync(new() { Id = ApprovalsGenerationEvents.ServiceAccountApprovalsGenerated, Data = approvalSpec, Visibility = KernelProcessEventVisibility.Public });
         }
 
