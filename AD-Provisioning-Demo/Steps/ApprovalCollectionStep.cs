@@ -20,22 +20,28 @@ namespace AD_Provisioning_Demo.Steps
         [KernelFunction(ApprovalCollectionFunctions.InitializeApprovalsCollection)]
         public async Task InitializeCollectionAsync(KernelProcessStepContext context, ApprovalSpec approvalSpec)
         {
-            if (_state is null) throw new InvalidOperationException("State is null.");
+            if (_state is null)
+                throw new InvalidOperationException("State is null.");
             _state.RequestId = approvalSpec.RequestId;
             _state.Pending = approvalSpec.RequiredApprovals.Select(a => a.Id).ToHashSet();
 
             // Sending approvals right from here for demo purposes
+            Console.WriteLine();
+            Console.WriteLine("****************************************************************************");
             foreach (var approval in approvalSpec.RequiredApprovals)
             {
                 Console.WriteLine($"[SIMULATION] Sending approval request to '{approval.Approver}' for Approval ID '{approval.Id}'.");
                 await Program.ProcessApprovalsAsync(approval);
             }
+            Console.WriteLine("****************************************************************************");
+            Console.WriteLine();
         }
 
         [KernelFunction(ApprovalCollectionFunctions.RecordApprovals)]
         public async Task RecordApprovalsAsync(KernelProcessStepContext context, Approval approval)
         {
-            if (_state is null) throw new InvalidOperationException("State is null.");
+            if (_state is null)
+                throw new InvalidOperationException("State is null.");
 
             if (!_state.Pending.Contains(approval.Id))
             {
@@ -51,7 +57,8 @@ namespace AD_Provisioning_Demo.Steps
         [KernelFunction(ApprovalCollectionFunctions.CheckApprovalsCompletion)]
         public async Task CheckApprovalsCompletionAsync(KernelProcessStepContext context)
         {
-            if (_state is null) throw new InvalidOperationException("State is null.");
+            if (_state is null)
+                throw new InvalidOperationException("State is null.");
             if (_state.AllRequiredReceived)
             {
                 await context.EmitEventAsync(new() { Id = ApprovalCollectionEvents.AllApprovalsReceived, Data = null, Visibility = KernelProcessEventVisibility.Public });
@@ -61,14 +68,22 @@ namespace AD_Provisioning_Demo.Steps
         [KernelFunction(ApprovalCollectionFunctions.FinalOutcome)]
         public async Task FinalOutcomeAsync(KernelProcessStepContext context)
         {
-            if (_state is null) throw new InvalidOperationException("State is null.");
+            if (_state is null)
+                throw new InvalidOperationException("State is null.");
 
             // Print received approvals
-            Console.WriteLine("=== Received Approvals ===");
+            Console.WriteLine();
+            Console.WriteLine("============================ Approvals Received =============================");
             foreach (var approval in _state.Received.Values)
             {
                 await Task.Delay(2000);
-                Console.WriteLine($"ID: {approval.Id}, Approver: {approval.Approver}, Role: {approval.Role}, Approved: {approval.Approved}, Timestamp: {approval.Timestamp}");
+                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine($"ID:         {approval.Id}");
+                Console.WriteLine($"Approver:   {approval.Approver}");
+                Console.WriteLine($"Role:       {approval.Role}");
+                Console.WriteLine($"Approved:   {approval.Approved}");
+                Console.WriteLine($"Timestamp:  {approval.Timestamp}");
+                Console.WriteLine("--------------------------------------------------");
             }
 
             // Print pending approvals
@@ -83,12 +98,18 @@ namespace AD_Provisioning_Demo.Steps
 
             if (_state.AllRequiredReceived && _state.AnyRejected)
             {
+                Console.WriteLine();
                 Console.WriteLine("[FINAL OUTCOME] The request has been rejected due to one or more rejections.");
+                Console.WriteLine();
             }
             else if (_state.AllRequiredReceived && !_state.AnyRejected)
             {
                 await Task.Delay(2000);
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("[FINAL OUTCOME] The request has been fully approved.");
+                Console.ResetColor();
+                Console.WriteLine();
                 await context.EmitEventAsync(new() { Id = ApprovalCollectionEvents.AllApprovalsApproved, Data = _state.RequestId, Visibility = KernelProcessEventVisibility.Public });
             }
             else

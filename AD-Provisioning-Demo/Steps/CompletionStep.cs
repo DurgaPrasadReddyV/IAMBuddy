@@ -14,7 +14,13 @@ namespace AD_Provisioning_Demo.Steps
         public void Complete(KernelProcessStepContext context, bool success)
         {
             var status = success ? "Provisioned" : "Failed";
+            Console.ForegroundColor = success ? ConsoleColor.Green : ConsoleColor.Red;
+            Console.WriteLine();
+            Console.WriteLine("****************************************************************************");
             Console.WriteLine($"[COMPLETION]: {status}");
+            Console.ResetColor();
+            Console.WriteLine("****************************************************************************");
+            Console.WriteLine();
         }
     }
 }

@@ -20,8 +20,11 @@ namespace AD_Provisioning_Demo.Steps
         {
             if (_state is null) throw new InvalidOperationException("State is null.");
             _state.RequestId = requestId;
-
+            Console.WriteLine();
+            Console.WriteLine("****************************************************************************");
             Console.WriteLine($"[SIMULATION] Sending to provisioning team for review.");
+            Console.WriteLine("****************************************************************************");
+            Console.WriteLine();
             await Program.ProcessProvisionEngineerReviewAsync(requestId);
         }
 
@@ -33,7 +36,13 @@ namespace AD_Provisioning_Demo.Steps
             if (provisionEngineerReview)
             {
                 await Task.Delay(2000);
+                Console.WriteLine();
+                Console.WriteLine("****************************************************************************");
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Provisioning Team Approved");
+                Console.ResetColor();
+                Console.WriteLine("****************************************************************************");
+                Console.WriteLine();
                 await context.EmitEventAsync(new() { Id = ProvisioningEvents.ProvisionEngineerReviewApproved, Data = _state.RequestId });
             }
             else
@@ -47,7 +56,13 @@ namespace AD_Provisioning_Demo.Steps
         public async Task ProvisionResourceAsync(KernelProcessStepContext context, Guid requestId)
         {
             await Task.Delay(2000);
+            Console.WriteLine();
+            Console.WriteLine("****************************************************************************");
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"[SIMULATION] Provisioning of Resource {requestId} Successful");
+            Console.ResetColor();
+            Console.WriteLine("****************************************************************************");
+            Console.WriteLine();
             await context.EmitEventAsync(new() { Id = ProvisioningEvents.ProcessCompleted, Data = true });
         }
 
