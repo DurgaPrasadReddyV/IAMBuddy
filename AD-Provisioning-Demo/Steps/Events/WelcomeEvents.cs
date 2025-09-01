@@ -13,5 +13,6 @@ namespace AD_Provisioning_Demo.Steps.Events
         public static readonly string RequestTypeSelectionComplete = nameof(RequestTypeSelectionComplete);
         public static readonly string RequestTypeCustomerInteractionTranscriptReady = nameof(RequestTypeCustomerInteractionTranscriptReady);
         public static readonly string RequestTypeIsNotValid = nameof(RequestTypeIsNotValid);
+        public static readonly string RequestTypeConfirmationNeeded = nameof(RequestTypeConfirmationNeeded);
     }
 }

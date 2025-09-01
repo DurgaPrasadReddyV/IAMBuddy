@@ -10,5 +10,6 @@ namespace AD_Provisioning_Demo.Steps.Functions
     {
         public const string Greetings = nameof(Greetings);
         public const string RequestTypeSelection = nameof(RequestTypeSelection);
+        public const string RequestTypeConfirmationNeeded = nameof(RequestTypeConfirmationNeeded);
     }
 }

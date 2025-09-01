@@ -21,7 +21,7 @@ namespace AD_Provisioning_Demo
 
             // Create a google kernel 
             var kernelBuilder = Kernel.CreateBuilder()
-            .AddGoogleAIGeminiChatCompletion(modelId: "gemini-2.5-flash", apiKey: "AIzaSyCkJtgisAk8poC_Ej9ydrPBAENYdDXRjcM");
+            .AddGoogleAIGeminiChatCompletion(modelId: "gemini-2.5-flash", apiKey: "AIzaSyAse8H8gl6WOecZMXySOi1RX2j7ticrulM");
             _kernel = kernelBuilder.Build();
 
             ProcessBuilder process = new("ActiveDirectoryProvisioning");
@@ -54,6 +54,11 @@ namespace AD_Provisioning_Demo
 
             welcomeStep
                 .OnEvent(WelcomeEvents.RequestTypeIsNotValid)
+                .SendEventTo(new ProcessFunctionTargetBuilder(displayRequestTypeSelectionAssistantMessageStep, DisplayAssistantMessageFunctions.ShowOnConsole));
+
+            welcomeStep
+                .OnEvent(WelcomeEvents.RequestTypeConfirmationNeeded)
+
                 .SendEventTo(new ProcessFunctionTargetBuilder(displayRequestTypeSelectionAssistantMessageStep, DisplayAssistantMessageFunctions.ShowOnConsole));
 
             displayRequestTypeSelectionAssistantMessageStep

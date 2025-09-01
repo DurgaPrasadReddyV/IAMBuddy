@@ -23,12 +23,11 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
     Welcome! I'm here to help you provision user accounts and access permissions within active directory.
     
     I can assist you with the following tasks:
-    1. Creating service accounts
-    2. Setting up user accounts  
-    3. Managing group memberships
-    4. Creating groups
+    1. Creating service accounts (CreateServiceAccount)
+    2. Setting up user accounts (CreateUserAccount)
+    3. Managing group memberships (ManageGroupMembership)
+    4. Creating groups (CreateGroup)
     
-    Type the number  (1-4) or the name (CreateServiceAccount/CreateUserAccount/ManageGroupMembership/CreateGroup).
     Please let me know which option you'd like to work with to get started. Type 'exit' to leave the process at any time.
     """;
 
@@ -64,6 +63,20 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
         Remember: Your goal is to help users quickly identify which option best fits their needs through friendly conversation and targeted questions.
         """;
 
+    public string _requestTypeConfirmationSystemPrompt = """
+        You are a helpful assistant that confirms user selections for Active Directory provisioning tasks. 
+        
+        The user has selected: {{selected_request_type}}
+        
+        Your job is to:
+        1. Clearly state what the user has selected
+        2. Ask for confirmation (yes/no) to proceed with this selection
+        3. Be friendly and professional
+        4. If they say no, let them know they can make a different selection
+        
+        Keep your response concise and clear.
+        """;
+
     [KernelFunction(WelcomeFunctions.Greetings)]
     public async Task WelcomeMessageAsync(KernelProcessStepContext context, Kernel _kernel)
     {
@@ -77,6 +90,19 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
         // Keeping track of all user interactions
         _state?.Conversation.Add(new ChatMessageContent { Role = AuthorRole.User, Content = userMessage });
 
+        // Check if we're in confirmation mode
+        if (_state?.RequestType?.IsValid() == true && _state.RequestTypeConfirmation != true)
+        {
+            await HandleConfirmationAsync(context, userMessage, _kernel);
+            return;
+        }
+
+        // Normal request type selection flow
+        await HandleRequestTypeSelectionAsync(context, userMessage, _kernel);
+    }
+
+    private async Task HandleRequestTypeSelectionAsync(KernelProcessStepContext context, string userMessage, Kernel _kernel)
+    {
         Kernel kernel = CreateNewRequestTypeKernel(_kernel);
 
         GeminiPromptExecutionSettings settings = new()
@@ -90,6 +116,7 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
         chatHistory.AddSystemMessage(_requestTypeSelectionSystemPrompt
             .Replace("{{current_request_value}}", JsonSerializer.Serialize(_state?.RequestType, _jsonOptions)));
         chatHistory.AddRange(_state?.Conversation ?? new List<ChatMessageContent>());
+
         IChatCompletionService chatService = kernel.Services.GetRequiredService<IChatCompletionService>();
         ChatMessageContent response = await chatService.GetChatMessageContentAsync(chatHistory, settings, kernel).ConfigureAwait(false);
         var assistantResponse = "";
@@ -103,15 +130,95 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
 
         if (_state?.RequestType != null && _state.RequestType.IsValid())
         {
-            Console.WriteLine($"[REQUEST_TYPE_SELECTION_COMPLETED]: {JsonSerializer.Serialize(_state?.RequestType, _jsonOptions)}");
-            // Request type is gathered to proceed to the next step
-            await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeSelectionComplete, Data = _state?.RequestType, Visibility = KernelProcessEventVisibility.Public });
-            await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeCustomerInteractionTranscriptReady, Data = _state?.Conversation, Visibility = KernelProcessEventVisibility.Public });
+            // Request type identified, now ask for confirmation
+            var confirmationMessage = GetRequestTypeConfirmationMessage(_state.RequestType.Type);
+            _state?.Conversation.Add(new ChatMessageContent { Role = AuthorRole.Assistant, Content = confirmationMessage });
+
+            await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeConfirmationNeeded, Data = confirmationMessage });
             return;
         }
 
         // emit event: request type is not valid yet
         await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeIsNotValid, Data = assistantResponse });
+    }
+
+    private async Task HandleConfirmationAsync(KernelProcessStepContext context, string userMessage, Kernel _kernel)
+    {
+        Kernel kernel = CreateConfirmationKernel(_kernel);
+
+        GeminiPromptExecutionSettings settings = new()
+        {
+            ToolCallBehavior = GeminiToolCallBehavior.AutoInvokeKernelFunctions,
+            Temperature = 0.3,
+            MaxTokens = 1024
+        };
+
+        ChatHistory chatHistory = new();
+        var requestTypeName = GetRequestTypeDisplayName(_state?.RequestType?.Type);
+        chatHistory.AddSystemMessage(_requestTypeConfirmationSystemPrompt
+            .Replace("{{selected_request_type}}", requestTypeName));
+
+        // Only add the recent confirmation conversation
+        chatHistory.AddUserMessage(userMessage);
+
+        IChatCompletionService chatService = kernel.Services.GetRequiredService<IChatCompletionService>();
+        ChatMessageContent response = await chatService.GetChatMessageContentAsync(chatHistory, settings, kernel).ConfigureAwait(false);
+
+        var assistantResponse = "";
+        if (response != null)
+        {
+            assistantResponse = response.Items[0].ToString();
+            _state?.Conversation.Add(new ChatMessageContent { Role = AuthorRole.Assistant, Content = assistantResponse });
+        }
+
+        // Check if confirmation was provided
+        if (_state?.RequestTypeConfirmation == true)
+        {
+            Console.WriteLine($"[REQUEST_TYPE_SELECTION_COMPLETED]: {JsonSerializer.Serialize(_state?.RequestType, _jsonOptions)}");
+            // Confirmed - proceed to next step
+            await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeSelectionComplete, Data = _state?.RequestType, Visibility = KernelProcessEventVisibility.Public });
+            await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeCustomerInteractionTranscriptReady, Data = _state?.Conversation, Visibility = KernelProcessEventVisibility.Public });
+            return;
+        }
+        else if (_state?.RequestTypeConfirmation == false)
+        {
+            // User said no - reset and start over
+            ResetRequestTypeSelection();
+            var restartMessage = "No problem! Let's start over. Please select which option you'd like to work with from the menu above.";
+            _state?.Conversation.Add(new ChatMessageContent { Role = AuthorRole.Assistant, Content = restartMessage });
+            await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeIsNotValid, Data = restartMessage });
+            return;
+        }
+
+        // Still waiting for clear confirmation - emit the assistant response
+        await context.EmitEventAsync(new() { Id = WelcomeEvents.RequestTypeConfirmationNeeded, Data = assistantResponse });
+    }
+
+    private void ResetRequestTypeSelection()
+    {
+        if (_state?.RequestType != null)
+        {
+            _state.RequestType.Type = ERequestType.Unknown;
+            _state.RequestTypeConfirmation = null;
+        }
+    }
+
+    private string GetRequestTypeConfirmationMessage(ERequestType requestType)
+    {
+        var displayName = GetRequestTypeDisplayName(requestType);
+        return $"I understand you want to work with: **{displayName}**\n\nIs this correct? Please reply with 'yes' to confirm or 'no' to select a different option.";
+    }
+
+    private string GetRequestTypeDisplayName(ERequestType? requestType)
+    {
+        return requestType switch
+        {
+            ERequestType.CreateServiceAccount => "Creating service accounts",
+            ERequestType.CreateUserAccount => "Setting up user accounts",
+            ERequestType.ManageGroupMembership => "Managing group memberships",
+            ERequestType.CreateGroup => "Creating groups",
+            _ => "Unknown"
+        };
     }
 
     public override ValueTask ActivateAsync(KernelProcessStepState<WelcomeState> state)
@@ -139,6 +246,38 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
         {
             if (_state != null && _state.RequestType != null)
                 _state.RequestType.Type = eRequestType;
+        }
+    }
+
+    private Kernel CreateConfirmationKernel(Kernel _baseKernel)
+    {
+        // Creating kernel for handling confirmation
+        Kernel kernel = new(_baseKernel.Services);
+        kernel.ImportPluginFromFunctions("HandleConfirmation", [
+            KernelFunctionFactory.CreateFromMethod(OnUserProvidedConfirmation, functionName: nameof(OnUserProvidedConfirmation)),
+        ]);
+
+        return kernel;
+    }
+
+    [Description("User provided confirmation response. Call this when user confirms or denies their selection. " +
+        "Use 'yes', 'true', 'confirm', 'correct', 'proceed' for positive confirmation. " +
+        "Use 'no', 'false', 'incorrect', 'wrong', 'different' for negative confirmation.")]
+    private void OnUserProvidedConfirmation(string confirmationResponse)
+    {
+        if (_state != null)
+        {
+            var response = confirmationResponse.ToLowerInvariant().Trim();
+            if (response.Contains("yes") || response.Contains("true") || response.Contains("confirm") ||
+                response.Contains("correct") || response.Contains("proceed") || response == "y")
+            {
+                _state.RequestTypeConfirmation = true;
+            }
+            else if (response.Contains("no") || response.Contains("false") || response.Contains("incorrect") ||
+                     response.Contains("wrong") || response.Contains("different") || response == "n")
+            {
+                _state.RequestTypeConfirmation = false;
+            }
         }
     }
 

@@ -12,5 +12,6 @@ namespace AD_Provisioning_Demo.Steps.States
     {
         public RequestType RequestType { get; set; } = new();
         public List<ChatMessageContent> Conversation { get; set; } = [];
+        public bool? RequestTypeConfirmation { get; set; }
     }
 }
