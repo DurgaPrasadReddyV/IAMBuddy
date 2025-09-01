@@ -128,7 +128,16 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         if (_state?.ServiceAccountRequest != null && _state.ServiceAccountRequest.IsFormCompleted())
         {
             Program.ServiceAccountRequests.Add(_state.ServiceAccountRequest);
-            Console.WriteLine($"[SERVICE_ACCOUNT_REQUEST_FORM_COMPLETED]: {JsonSerializer.Serialize(_state?.ServiceAccountRequest)}");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine();
+            Console.WriteLine($"=====Service account request form validation completed=============");
+            foreach (var prop in _state.ServiceAccountRequest.GetType().GetProperties())
+            {
+                Console.WriteLine($"{prop.Name,-25}: {prop.GetValue(_state.ServiceAccountRequest)}");
+            }
+            Console.WriteLine($"===================================================================");
+            Console.WriteLine();
+            Console.ResetColor();
             // All user information is gathered to proceed to the next step
             await context.EmitEventAsync(new() { Id = RequestIntakeEvents.ServiceAccountRequestFormComplete, Data = _state?.ServiceAccountRequest, Visibility = KernelProcessEventVisibility.Public });
             await context.EmitEventAsync(new() { Id = RequestIntakeEvents.ServiceAccountRequestCustomerInteractionTranscriptReady, Data = _state?.Conversation, Visibility = KernelProcessEventVisibility.Public });
@@ -201,7 +210,7 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         if (!string.IsNullOrEmpty(accountName) && _state != null)
         {
             _state.ServiceAccountRequest.AccountName = accountName;
-             return $"accountName set to {accountName}";
+            return $"accountName set to {accountName}";
             //string[] data = accountName.Split('-');
             //if (data.Length > 0 && data[0] == _state.ServiceAccountRequest.AppName)
             //{

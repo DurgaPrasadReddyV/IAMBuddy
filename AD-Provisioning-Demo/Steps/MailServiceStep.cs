@@ -17,6 +17,7 @@ public class MailServiceStep : KernelProcessStep
         Console.WriteLine("======== MAIL SERVICE ======== ");
         Console.WriteLine(message);
         Console.WriteLine("============================== ");
+        Console.WriteLine();
 
         await context.EmitEventAsync(new() { Id = MailServiceEvents.SimpleMessageMailSent, Data = message });
     }
@@ -25,24 +26,27 @@ public class MailServiceStep : KernelProcessStep
     public async Task SendApprovalsMailAsync(KernelProcessStepContext context, ApprovalSpec approvalSpec)
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("======== MAIL SERVICE ======== ");
-
-        Console.WriteLine($"Approval Request ID: {approvalSpec.RequestId}");
-        if (approvalSpec.RequiredApprovals != null)
+        Console.WriteLine("================================MAIL SERVICE ================== ");
+        Console.WriteLine();
+        Console.WriteLine($"Approval Request ID : {approvalSpec.RequestId}");
+        Console.WriteLine("----------------------------------------------------------------");
+        if (approvalSpec.RequiredApprovals != null && approvalSpec.RequiredApprovals.Count > 0)
         {
             foreach (var approval in approvalSpec.RequiredApprovals)
             {
-                Console.WriteLine($"Approval ID: {approval.Id}");
-                Console.WriteLine($"Approver: {approval.Approver}");
-                Console.WriteLine($"Role: {approval.Role}");
+                Console.WriteLine($"Approval ID : {approval.Id}");
+                Console.WriteLine($"Approver    : {approval.Approver}");
+                Console.WriteLine($"Role        : {approval.Role}");
+                Console.WriteLine("----------------------------------------------------------------");
             }
         }
         else
         {
             Console.WriteLine("No approvals found.");
         }
-
-        Console.WriteLine("============================== ");
+        Console.WriteLine();
+        Console.WriteLine("================================================================= ");
+        Console.WriteLine();
         Console.ResetColor();
 
         await context.EmitEventAsync(new() { Id = MailServiceEvents.ApprovalsMailSent, Data = approvalSpec });
