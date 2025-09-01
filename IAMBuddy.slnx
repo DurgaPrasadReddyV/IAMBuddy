@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Demos/">
+    <Project Path="AD-Provisioning-Demo/AD-Provisioning-Demo.csproj" />
+  </Folder>
   <Folder Name="/SolutionItems/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
