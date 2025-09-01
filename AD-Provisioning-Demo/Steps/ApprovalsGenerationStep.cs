@@ -34,7 +34,7 @@ namespace AD_Provisioning_Demo.Steps
         [KernelFunction(ApprovalsGenerationFunctions.GenerateServiceAccountApprovals)]
         public virtual async ValueTask GenerateServiceAccountApprovalsAsync(KernelProcessStepContext context, ServiceAccountRequest request, Kernel _kernel)
         {
-            var rule = PolicyMatrixLoader.GetRules(nameof(ServiceAccountRequest)).FirstOrDefault(r => r.RequestType.Equals(nameof(ServiceAccountRequest), StringComparison.OrdinalIgnoreCase));
+            var rule = PoliciesLoader.GetRules(nameof(ServiceAccountRequest)).FirstOrDefault(r => r.RequestType.Equals(nameof(ServiceAccountRequest), StringComparison.OrdinalIgnoreCase));
             if (rule is null)
                 throw new NotSupportedException($"No policy rule found for RequestType='{typeof(ServiceAccountRequest)}'.");
 
@@ -85,7 +85,7 @@ namespace AD_Provisioning_Demo.Steps
         [KernelFunction(ApprovalsGenerationFunctions.GenerateUserAccountApprovals)]
         public virtual async ValueTask GenerateUserAccountApprovalsAsync(KernelProcessStepContext context, UserAccountRequest request, Kernel _kernel)
         {
-            var rule = PolicyMatrixLoader.GetRules(nameof(UserAccountRequest)).FirstOrDefault(r => r.RequestType.Equals(typeof(UserAccountRequest).Name, StringComparison.OrdinalIgnoreCase));
+            var rule = PoliciesLoader.GetRules(nameof(UserAccountRequest)).FirstOrDefault(r => r.RequestType.Equals(typeof(UserAccountRequest).Name, StringComparison.OrdinalIgnoreCase));
             if (rule is null)
                 throw new NotSupportedException($"No policy rule found for RequestType='{typeof(UserAccountRequest)}'.");
 
