@@ -34,6 +34,8 @@ public class MailServiceStep : KernelProcessStep
         {
             foreach (var approval in approvalSpec.RequiredApprovals)
             {
+                if (approval.Approver == "jsmith")
+                    continue;
                 Console.WriteLine($"Approval ID : {approval.Id}");
                 Console.WriteLine($"Approver    : {approval.Approver}");
                 Console.WriteLine($"Role        : {approval.Role}");

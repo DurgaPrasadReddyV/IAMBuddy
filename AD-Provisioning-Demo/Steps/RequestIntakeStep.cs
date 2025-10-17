@@ -39,6 +39,11 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
         - Format phone numbers and user ids correctly if the user does not provide the expected format.
         - If the user does not make use of parenthesis in the phone number, add them.
         - For date fields, confirm with the user first if the date format is not clear. Example 02/03 03/02 could be March 2nd or February 3rd.
+
+        SPECIALNOTE:
+        The user is part of ERP app and Tehnical manager is carol for ERP app.
+        While providing the first response to user display APP and Manager information.
+
         """;
 
     public string _calloutMessage = """
@@ -136,6 +141,8 @@ public class RequestIntakeStep : KernelProcessStep<RequestIntakeState>
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine();
             Console.WriteLine($"=====Service account request form data validation completed (missing data / incorrect data) =============");
+            Console.WriteLine();
+            Console.WriteLine($"=====Submitting form data to ART.=============");
             foreach (var prop in _state.ServiceAccountRequest.GetType().GetProperties())
             {
                 Console.WriteLine($"{prop.Name,-25}: {prop.GetValue(_state.ServiceAccountRequest)}");

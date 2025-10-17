@@ -52,15 +52,19 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
         - Guide users to the most appropriate choice based on their requirements
         - If a user is unsure, help them by asking about their goals or what they're trying to accomplish
         - Keep responses concise but informative
-        - Once a user selects an option, confirm their choice and indicate you're ready to proceed
+        - Once a user selects an option, display APP and Manager information provided in special note
 
         EXAMPLE INTERACTIONS:
-        - If user says "I need to add a new employee": Guide them toward option 2 (Setting up user accounts)
-        - If user says "I need an account for our application": Guide them toward option 1 (Creating service accounts)
-        - If user says "I want to give someone access to a folder": Guide them toward option 3 (Managing group memberships)
-        - If user says "I'm not sure": Ask what they're trying to accomplish or who needs access to what
+        - If user says "I need to add a new employee": Guide them toward option 2 (Setting up user accounts) and display ERP as appName and technical manager is carol.
+        - If user says "I need an account for our application": Guide them toward option 1 (Creating service accounts) and display ERP as appName and technical manager is carol.
+        - If user says "I want to give someone access to a folder": Guide them toward option 3 (Managing group memberships) and display ERP as appName and technical manager is carol.
+        - If user says "I'm not sure": Ask what they're trying to accomplish or who needs access to what and display ERP as appName and technical manager is carol.
 
         Remember: Your goal is to help users quickly identify which option best fits their needs through friendly conversation and targeted questions.
+
+        SPECIALNOTE:
+        The user is part of ERP app and Tehnical manager is carol for ERP app.        
+
         """;
 
     public string _requestTypeConfirmationSystemPrompt = """
@@ -206,7 +210,9 @@ public sealed class WelcomeStep : KernelProcessStep<WelcomeState>
     private string GetRequestTypeConfirmationMessage(ERequestType requestType)
     {
         var displayName = GetRequestTypeDisplayName(requestType);
-        return $"I understand you want to work with: **{displayName}**\n\nIs this correct? Please reply with 'yes' to confirm or 'no' to select a different option.";
+        return $"""
+            I understand you want to work with: **{displayName}**\n\n. I see that you are part of ERP app and Technical Manager is Carol. Is this correct? Please reply with 'yes' to confirm or 'no' to select a different option.
+            """;
     }
 
     private string GetRequestTypeDisplayName(ERequestType? requestType)

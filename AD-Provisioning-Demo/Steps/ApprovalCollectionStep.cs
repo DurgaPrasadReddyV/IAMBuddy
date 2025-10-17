@@ -30,7 +30,14 @@ namespace AD_Provisioning_Demo.Steps
             Console.WriteLine("****************************************************************************");
             foreach (var approval in approvalSpec.RequiredApprovals)
             {
-                Console.WriteLine($"[SIMULATION] Approval request sent to '{approval.Approver}' for Approval ID '{approval.Id}'.");
+                if (approval.Approver == "jsmith")
+                {
+                    Console.WriteLine($"[SIMULATION] Approval request sent to '{approval.Approver}' for Approval ID '{approval.Id}' already sent by ART system.");
+                }
+                else
+                {
+                    Console.WriteLine($"[SIMULATION] Approval request sent to '{approval.Approver}' for Approval ID '{approval.Id}' is identified by policy rules.");
+                }
                 await Program.ProcessApprovalsAsync(approval);
             }
             Console.WriteLine("****************************************************************************");
